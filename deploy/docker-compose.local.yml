@@ -30,6 +30,8 @@ services:
     build:
       context: ..
       dockerfile: Dockerfile
+      args:
+        NPM_CONFIG_REGISTRY: ${NPM_CONFIG_REGISTRY:-}
     container_name: sub2api
     restart: unless-stopped
     security_opt:
