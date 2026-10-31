@@ -1,0 +1,102 @@
+# 部署docker
+
+sudo apt remove $(dpkg --get-selections docker.io docker-compose docker-compose-v2 docker-doc docker-buildx podman-docker containerd runc | cut -f1)
+
+sudo apt update
+sudo apt install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+
+sudo apt update
+
+sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+sudo systemctl status docker
+sudo systemctl start docker
+
+
+
+sudo mkdir -p /etc/docker
+
+sudo tee /etc/docker/daemon.json <<'EOF'
+{
+  "registry-mirrors": [
+    "https://docker.m.daocloud.io",
+    "https://docker.1ms.run"
+  ],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "3"
+  }
+}
+EOF
+
+
+
+
+
+# 部署sub2api
+sudo mkdir -p /opt && cd /opt
+
+git clone -b prod https://github.com/wangwenjun1990/sub2api.git
+
+cd sub2api
+git log --oneline -1     # 显示最新的一次提交
+
+
+# 拉取代码
+
+cd /opt/sub2api
+git pull --ff-only
+
+# 切换分支dev - 生产不用
+
+git fetch origin
+git switch dev
+
+# 密码管理，固定位置(重要) - 将项目env文件放入这个位置: /opt/sub2api/deploy/.env
+
+mv .env /opt/sub2api/deploy/
+cd /opt/sub2api/deploy
+chmod 600 .env
+
+# 部署
+
+cd /opt/sub2api
+
+mkdir -p deploy/data deploy/postgres_data deploy/redis_data
+
+docker compose \
+  --env-file deploy/.env \
+  -f deploy/docker-compose.local.yml \
+  up -d --build
+
+# 验证
+
+docker compose --env-file deploy/.env -f deploy/docker-compose.local.yml ps
+curl -fsS http://127.0.0.1:8080/health
+
+  
+# 重新发布
+
+cd /opt/sub2api
+git pull --ff-only
+
+docker compose --env-file deploy/.env -f deploy/docker-compose.local.yml up -d --build
+
+
+# 查看日志
+
+tail -f /opt/sub2api/deploy/data/logs/sub2api.log
