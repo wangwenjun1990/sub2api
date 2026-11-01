@@ -39,7 +39,8 @@ services:
         soft: 100000
         hard: 100000
     ports:
-      - "${BIND_HOST:-0.0.0.0}:${SERVER_PORT:-8080}:8080"
+      # 只监听本机，外网统一走 Caddy 的 80/443
+      - "127.0.0.1:${SERVER_PORT:-8080}:8080"
     volumes:
       # Local directory mapping for easy migration
       - ./data:/app/data:Z
@@ -223,6 +224,30 @@ services:
       timeout: 10s
       retries: 3
       start_period: 30s
+
+  # ===========================================================================
+  # Caddy（HTTPS + 反向代理 + 落地页静态托管）
+  # ===========================================================================
+  caddy:
+    image: caddy:2-alpine
+    container_name: sub2api-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      # 落地页目录：compose 在 deploy/ 下，所以 ../landing 是仓库根目录的 landing/
+      # 如果你只把 deploy/ 拷到服务器，请把 index.html 放到 deploy/landing/，
+      # 并把下面一行改成 ./landing
+      - ../landing:/var/www/sub2api-landing:ro
+      # local 版本统一用本地目录，方便整体打包迁移
+      - ./caddy_data:/data
+      - ./caddy_config:/config
+    networks:
+      - sub2api-network
+    depends_on:
+      - sub2api
 
   # ===========================================================================
   # PostgreSQL Database
