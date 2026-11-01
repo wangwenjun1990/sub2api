@@ -22,18 +22,17 @@
 }
 
 # -----------------------------------------------------------------------------
-# 落地页：仓库根目录的 landing/index.html
-# 容器内路径固定为 /var/www/sub2api-landing
+# 落地页：/opt/sub2api/landing/index.html
 # -----------------------------------------------------------------------------
 queqiaohub.com, www.queqiaohub.com {
-	root * /var/www/sub2api-landing
+	root * /opt/sub2api/landing
 	encode zstd gzip
 	file_server
 }
 
 # -----------------------------------------------------------------------------
 # sub2api 控制台 + API
-# 容器内通过服务名 sub2api 访问，不要写 localhost
+# Caddy 装在宿主机上，所以转发到 127.0.0.1:8080
 # -----------------------------------------------------------------------------
 api.queqiaohub.com {
 	# 不要改成 encode gzip zstd 简写：它会把 text/event-stream 也压缩并缓冲，
@@ -63,7 +62,7 @@ api.queqiaohub.com {
 		max_size 256MB
 	}
 
-	reverse_proxy sub2api:8080 {
+	reverse_proxy 127.0.0.1:8080 {
 		transport http {
 			keepalive 120s
 			keepalive_idle_conns 256
