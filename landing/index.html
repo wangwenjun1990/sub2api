@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="一个 API Key，接入主流大模型。OpenAI 兼容接口，按量计费，充值即用。" />
-  <title>Sub2API - 一个 API Key，接入主流大模型</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230b1220'/><path d='M18 40c4 4 10 6 16 6 8 0 13-4 13-10 0-5-3-8-10-10l-6-2c-3-1-4-2-4-4 0-2 3-4 7-4 5 0 9 2 12 5l5-7c-4-4-10-6-17-6-9 0-16 5-16 13 0 6 4 9 11 11l6 2c3 1 4 2 4 4 0 2-2 4-6 4-5 0-9-2-13-5z' fill='%236ee7b7'/></svg>" />
+  <title>鹊桥 - 一个 API Key，接入主流大模型</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230b1220'/><path d='M12 43h40' stroke='%236ee7b7' stroke-width='4' stroke-linecap='round'/><path d='M15 43c0-10 7.6-18 17-18s17 8 17 18' fill='none' stroke='%2338bdf8' stroke-width='4' stroke-linecap='round'/><circle cx='32' cy='15' r='3.5' fill='%236ee7b7'/></svg>" />
   <style>
     :root {
       --bg: #070b12;
@@ -445,8 +445,8 @@
   <header class="header">
     <div class="container nav" id="nav">
       <a class="brand" href="#top">
-        <span class="brand-mark">S2</span>
-        <span data-site-name>Sub2API</span>
+        <span class="brand-mark">鹊</span>
+        <span data-site-name>鹊桥</span>
       </a>
       <nav class="nav-links">
         <a href="#features">功能</a>
@@ -728,8 +728,8 @@
       <div class="footer-grid">
         <div class="footer-brand">
           <a class="brand" href="#top">
-            <span class="brand-mark">S2</span>
-            <span data-site-name>Sub2API</span>
+            <span class="brand-mark">鹊</span>
+            <span data-site-name>鹊桥</span>
           </a>
           <p>一个 API Key，接入主流大模型。OpenAI 兼容，按量计费。</p>
         </div>
@@ -743,7 +743,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <span>© <span id="year"></span> <span data-site-name>Sub2API</span></span>
+        <span>© <span id="year"></span> <span data-site-name>鹊桥</span></span>
         <span data-icp>ICP备00000000号</span>
       </div>
     </div>
@@ -756,12 +756,12 @@
      * ============================================================
      */
     const SITE_CONFIG = {
-      name: "Sub2API",                              // 品牌名
-      panelUrl: "https://console.example.com",      // 控制台地址
-      registerUrl: "https://console.example.com/register", // 注册地址
-      apiBase: "https://api.example.com",           // API Base URL
-      contactUrl: "https://t.me/yourname",          // 客服/Telegram/QQ 链接
-      icp: "ICP备00000000号"                        // 备案号，没有就留空
+      name: "鹊桥",                                  // 品牌名
+      panelUrl: "https://api.queqiaohub.com/dashboard", // 控制台地址
+      registerUrl: "https://api.queqiaohub.com/register", // 注册地址
+      apiBase: "https://api.queqiaohub.com",        // API Base URL
+      contactUrl: "https://t.me/yourname",          // 客服/Telegram/QQ 链接（改成你的）
+      icp: ""                                       // 备案号，没有就留空
     };
     /* ============================================================ */
 
@@ -771,15 +771,19 @@
     });
     document.querySelectorAll("[data-panel-url]").forEach((el) => {
       el.href = SITE_CONFIG.panelUrl;
+      // 被后台首页 iframe 嵌入时，跳出 iframe，避免套娃
+      el.target = "_top";
     });
     document.querySelectorAll("[data-register-url]").forEach((el) => {
       el.href = SITE_CONFIG.registerUrl;
+      el.target = "_top";
     });
     document.querySelectorAll("[data-api-base]").forEach((el) => {
       el.textContent = SITE_CONFIG.apiBase;
     });
     document.querySelectorAll("[data-contact-url]").forEach((el) => {
       el.href = SITE_CONFIG.contactUrl;
+      el.target = "_blank";
     });
     document.querySelectorAll("[data-icp]").forEach((el) => {
       el.textContent = SITE_CONFIG.icp;
