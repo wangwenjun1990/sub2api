@@ -1,3 +1,9 @@
+# =============================================================================
+# Caddy 配置：落地页（静态）+ sub2api（反向代理）
+# 部署前把 queqiaohub.com 换成你的域名
+# 说明见 deploy/EDGE_SECURITY.md
+# =============================================================================
+
 {
 	servers {
 		max_header_size 64KB
@@ -5,69 +11,38 @@
 			read_header 10s
 			idle 2m
 		}
+
+		# 可选：只允许 Cloudflare 回源时，用下面三行信任 CF-Connecting-IP 拿真实
+		# 客户端 IP。CIDR 需要换成 https://www.cloudflare.com/ips/ 的最新回源段，
+		# 并同时取消 api 站点里 header_up 两行的注释。
+		# trusted_proxies static 173.245.48.0/20 103.21.244.0/22
+		# trusted_proxies_strict
+		# client_ip_headers CF-Connecting-IP X-Forwarded-For
 	}
 }
 
-# 修改为你的域名
-api.sub2api.com {
-	# This baseline assumes clients connect directly to Caddy. When Caddy is
-	# behind a CDN, configure explicit trusted proxy CIDRs and {client_ip} as
-	# documented in EDGE_SECURITY.md; {remote_host} would otherwise be the CDN.
-	# =========================================================================
-	# TLS 安全配置
-	# =========================================================================
-	tls {
-		# 仅使用 TLS 1.2 和 1.3
-		protocols tls1.2 tls1.3
+# -----------------------------------------------------------------------------
+# 落地页：仓库根目录的 landing/index.html
+# 容器内路径固定为 /var/www/sub2api-landing
+# -----------------------------------------------------------------------------
+queqiaohub.com, www.queqiaohub.com {
+	root * /var/www/sub2api-landing
+	encode zstd gzip
+	file_server
+}
 
-		# 优先使用的加密套件
-		ciphers TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256 TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256 TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	}
-
-	# =========================================================================
-	# 反向代理配置
-	# =========================================================================
-	reverse_proxy localhost:8080 {
-		# 健康检查
-		health_uri /health
-		health_interval 30s
-		health_timeout 10s
-		health_status 200
-
-		# 负载均衡策略（单节点可忽略，多节点时有用）
-		lb_policy round_robin
-		lb_try_duration 5s
-		lb_try_interval 250ms
-
-		# 仅从实际 TCP 对端生成转发头，避免透传客户端伪造值。
-		header_up X-Real-IP {remote_host}
-		header_up X-Forwarded-For {remote_host}
-		header_up X-Forwarded-Proto {scheme}
-		header_up X-Forwarded-Host {host}
-		# 连接池优化
-		transport http {
-			keepalive 120s
-			keepalive_idle_conns 256
-			read_buffer 16KB
-			write_buffer 16KB
-			compression off
-		}
-
-		# 故障转移
-		fail_duration 30s
-		max_fails 3
-		unhealthy_status 500 502 503 504
-	}
-
-	# =========================================================================
-	# 压缩配置
-	# =========================================================================
+# -----------------------------------------------------------------------------
+# sub2api 控制台 + API
+# 容器内通过服务名 sub2api 访问，不要写 localhost
+# -----------------------------------------------------------------------------
+api.queqiaohub.com {
+	# 不要改成 encode gzip zstd 简写：它会把 text/event-stream 也压缩并缓冲，
+	# 导致流式响应（SSE）卡住直到结束。
 	encode {
 		zstd
 		gzip 6
 		minimum_length 256
 		match {
-			# 不使用 text/*，否则 text/event-stream 会被压缩并缓冲到流结束
 			header Content-Type text/css*
 			header Content-Type text/csv*
 			header Content-Type text/html*
@@ -83,30 +58,22 @@ api.sub2api.com {
 		}
 	}
 
-	# =========================================================================
-	# 请求大小限制 (防止大文件攻击)
-	# =========================================================================
+	# 上传/请求体上限，按需调整
 	request_body {
 		max_size 256MB
 	}
 
-	# =========================================================================
-	# 日志配置
-	# =========================================================================
-	log {
-		output file /var/log/caddy/sub2api.log {
-			roll_size 50mb
-			roll_keep 10
-			roll_keep_for 720h
+	reverse_proxy sub2api:8080 {
+		transport http {
+			keepalive 120s
+			keepalive_idle_conns 256
+			read_buffer 16KB
+			write_buffer 16KB
+			compression off
 		}
-		format json
-		level INFO
 	}
 
-	# =========================================================================
-	# 错误处理
-	# =========================================================================
-	handle_errors {
-		respond "{err.status_code} {err.status_text}"
-	}
+	# 可选：配合上面全局 trusted_proxies 使用，向后端传递真实客户端 IP
+	# header_up X-Real-IP {client_ip}
+	# header_up X-Forwarded-For {client_ip}
 }
