@@ -1,0 +1,35 @@
+# =============================================================================
+# Local-only debugging overlay: expose PostgreSQL on the Docker host loopback.
+# =============================================================================
+# This file is NOT loaded automatically. It is intentionally named
+# docker-compose.tunnel.yml instead of docker-compose.override.yml so that a
+# normal `docker compose up -d` never opens a database port by accident.
+#
+# Usage (on the server, from the deploy directory):
+#
+#   # named volumes version
+#   docker compose -f docker-compose.yml -f docker-compose.tunnel.yml up -d postgres
+#
+#   # local-directory version
+#   docker compose -f docker-compose.local.yml -f docker-compose.tunnel.yml up -d postgres
+#
+# The port is bound to 127.0.0.1 only, so it is reachable from the server
+# itself and through an SSH tunnel, but NOT from the public internet.
+#
+# Verify with:
+#   ss -lntp | grep 5433        # must show 127.0.0.1:5433, never 0.0.0.0:5433
+#
+# Remove the mapping again with:
+#   docker compose -f docker-compose.yml up -d postgres
+# =============================================================================
+
+services:
+  postgres:
+    ports:
+      # host_ip:host_port:container_port
+      - "127.0.0.1:${POSTGRES_TUNNEL_PORT:-5433}:5432"
+
+  # Optional: the same trick for Redis, if you need to inspect it.
+  # redis:
+  #   ports:
+  #     - "127.0.0.1:${REDIS_TUNNEL_PORT:-6380}:6379"
