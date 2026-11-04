@@ -35,6 +35,12 @@ queqiaohub.com, www.queqiaohub.com {
 # Caddy 装在宿主机上，所以转发到 127.0.0.1:8080
 # -----------------------------------------------------------------------------
 api.queqiaohub.com {
+	# 根路径直接 302 到落地页，不经过 Vue 应用。
+	# 否则会先加载 sub2api 的旧首页（/home），再渲染/跳转 landing。
+	# 只匹配精确的 / 和 /index.html，不影响 /login、/dashboard、/v1/... 等接口。
+	@root path / /index.html
+	redir @root https://queqiaohub.com{uri} 302
+
 	# 不要改成 encode gzip zstd 简写：它会把 text/event-stream 也压缩并缓冲，
 	# 导致流式响应（SSE）卡住直到结束。
 	encode {
