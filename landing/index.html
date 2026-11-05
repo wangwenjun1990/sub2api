@@ -3,819 +3,352 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="一个 API Key，接入主流大模型。OpenAI 兼容接口，按量计费，充值即用。" />
-  <title>鹊桥 - 一个 API Key，接入主流大模型</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230b1220'/><path d='M12 43h40' stroke='%236ee7b7' stroke-width='4' stroke-linecap='round'/><path d='M15 43c0-10 7.6-18 17-18s17 8 17 18' fill='none' stroke='%2338bdf8' stroke-width='4' stroke-linecap='round'/><circle cx='32' cy='15' r='3.5' fill='%236ee7b7'/></svg>" />
+  <meta name="theme-color" content="#100e17" />
+  <meta name="description" content="鹊桥，用一个 API Key 连接主流 AI 模型。写代码、做内容、探索新知，让你的好想法即刻发生。" />
+  <title>鹊桥 — 让好想法，即刻发生。</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23100e17'/%3E%3Cpath d='M12 44V34a20 20 0 0 1 40 0v10M12 44h40M24 44V33a8 8 0 0 1 16 0v11' fill='none' stroke='%23c7adff' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E" />
   <style>
-    :root {
-      --bg: #070b12;
-      --bg-soft: #0b1220;
-      --card: rgba(255, 255, 255, 0.035);
-      --card-strong: rgba(255, 255, 255, 0.06);
-      --border: rgba(255, 255, 255, 0.09);
-      --text: #e8eef8;
-      --muted: #93a1b8;
-      --accent: #6ee7b7;
-      --accent-2: #38bdf8;
-      --danger: #fb7185;
-      --radius: 18px;
-      --max: 1120px;
+    :root { color-scheme:dark; --bg:#100e17; --surface:#19151f; --text:#f4f1f8; --muted:#a99fb5; --accent:#c7adff; --lime:#d6f9a3; --line:#ffffff13; --max:1180px; }
+    *,*::before,*::after { box-sizing:border-box; }
+    html { scroll-behavior:smooth; scroll-padding-top:100px; }
+    body { margin:0; background:var(--bg); color:var(--text); font-family:"Inter","SF Pro Display","PingFang SC","Microsoft YaHei",system-ui,sans-serif; font-size:15px; line-height:1.7; -webkit-font-smoothing:antialiased; }
+    ::selection { background:var(--accent); color:var(--bg); }
+    a { color:inherit; text-decoration:none; } button { font:inherit; color:inherit; cursor:pointer; } a,button,summary { -webkit-tap-highlight-color:transparent; }
+    :is(a,button,summary,[tabindex="0"]):focus-visible { outline:2px solid var(--lime); outline-offset:5px; }
+    h1,h2,h3,p { margin:0; } svg { display:block; }
+    .container { width:min(var(--max),calc(100% - 64px)); margin-inline:auto; }
+    .mono { font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace; }
+    .icon { width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
+    .skip { position:fixed; top:-100px; left:16px; z-index:100; background:var(--accent); color:var(--bg); padding:8px 16px; border-radius:8px; } .skip:focus { top:12px; }
+    .header { position:sticky; top:0; z-index:30; background:#100e17e3; backdrop-filter:blur(20px); border-bottom:1px solid var(--line); }
+    .nav { height:80px; display:flex; align-items:center; justify-content:space-between; gap:30px; }
+    .brand { display:inline-flex; align-items:center; gap:11px; font-size:24px; font-weight:750; letter-spacing:1px; }
+    .brand-icon { width:36px; height:36px; color:var(--accent); }
+    .brand-en { margin-left:3px; padding-left:14px; border-left:1px solid #ffffff24; font-size:10px; letter-spacing:1.7px; color:#b5a9c6; font-weight:500; }
+    .nav-links,.nav-actions { display:flex; align-items:center; gap:30px; }
+    .nav-links { color:#b4acbf; font-size:13px; } .nav-links a:hover,.footer-links a:hover { color:var(--accent); }
+    .nav-actions { gap:22px; font-size:13px; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:14px; min-height:48px; padding:12px 23px; border:1px solid transparent; border-radius:9px; font-size:14px; font-weight:650; line-height:1.5; transition:background .2s,transform .2s,box-shadow .2s; }
+    .btn .icon { width:18px; height:18px; transition:transform .2s; } .btn:hover .icon { transform:translateX(3px); }
+    .btn-primary { background:var(--accent); color:#21132f; box-shadow:0 4px 20px #a56dff12; }
+    .btn-primary:hover { background:#d8c5ff; box-shadow:0 6px 30px #bb8aff26; transform:translateY(-2px); }
+    .btn-secondary { border-color:#ffffff20; background:#ffffff03; color:#e2dbea; } .btn-secondary:hover { background:#ffffff09; }
+    .btn-small { min-height:38px; padding:9px 16px; font-size:12px; border-radius:7px; }
+    .menu-toggle { display:none; background:none; border:1px solid var(--line); border-radius:6px; padding:9px; }
+    .eyebrow { display:flex; align-items:center; gap:10px; font-size:10px; font-weight:500; letter-spacing:2px; color:var(--accent); }
+    .eyebrow::before { content:""; width:19px; height:1px; background:currentColor; }
+    .hero { position:relative; overflow:hidden; }
+    .hero::before { content:""; position:absolute; width:920px; height:760px; left:45%; top:-110px; pointer-events:none; background:radial-gradient(ellipse,#8f55e812,transparent 65%); }
+    .hero-main { position:relative; display:grid; grid-template-columns:1fr 1fr; align-items:center; min-height:620px; padding-block:66px 62px; }
+    .hero-copy { position:relative; z-index:2; } .hero .eyebrow { color:#c9c0d5; letter-spacing:2.1px; }
+    .hero .eyebrow::before { width:6px; height:6px; border-radius:50%; color:var(--lime); box-shadow:0 0 14px #d6f9a355; }
+    h1 { margin-block:26px 24px; font-size:clamp(50px,5.1vw,74px); line-height:1.22; letter-spacing:-3.5px; font-weight:740; }
+    h1 em { font-style:normal; color:var(--accent); }
+    .hero-description { font-size:15px; color:#b2a9be; line-height:1.95; max-width:450px; } .hero-description strong { font-weight:500; color:#ded6e9; }
+    .hero-actions { margin-top:31px; display:flex; align-items:center; gap:13px; flex-wrap:wrap; }
+    .hero-note { display:flex; align-items:center; gap:9px; margin-top:20px; font-size:11px; color:#a99eb5; } .hero-note .icon { color:var(--lime); width:14px; height:14px; }
+    .hero-art { position:relative; height:475px; margin-left:-30px; margin-right:-45px; isolation:isolate; }
+    .bridge-svg { width:100%; height:100%; overflow:visible; }
+    .orbit-trail { stroke-dasharray:3 10; animation:orbit-flow 40s linear infinite; } @keyframes orbit-flow { to { stroke-dashoffset:-500; } }
+    .bridge-core { transform-origin:330px 251px; animation:breathe 7s ease-in-out infinite; } @keyframes breathe { 50% { filter:drop-shadow(0 0 12px #bf8aff50); transform:translateY(-5px); } }
+    .float-label { position:absolute; display:flex; align-items:center; gap:10px; padding:11px 15px; border:1px solid #ffffff16; border-radius:10px; background:#1d1727e3; box-shadow:0 15px 40px #00000028; backdrop-filter:blur(12px); font-size:13px; }
+    .float-label b { font-weight:550; } .float-label small { display:block; margin-top:1px; font-size:8px; letter-spacing:1.2px; color:#a79bb6; }
+    .model-symbol { font-size:25px; width:29px; text-align:center; line-height:1; }
+    .float-claude { top:65px; left:76px; transform:rotate(-7deg); } .float-gpt { right:1px; top:175px; transform:rotate(7deg); } .float-gemini { bottom:29px; left:124px; transform:rotate(-4deg); }
+    .art-caption { position:absolute; bottom:5px; right:24px; color:#a49aaf; font-size:9px; letter-spacing:1.5px; } .art-coordinate { position:absolute; top:30px; right:35px; font-size:9px; letter-spacing:1px; color:#a294af; }
+    .model-strip { position:relative; display:flex; align-items:center; justify-content:space-between; gap:28px; padding:28px 0 32px; border-top:1px solid var(--line); }
+    .model-strip-caption { font-size:10px; line-height:1.8; color:#a89bb8; letter-spacing:1.1px; }
+    .model-wordmarks { display:flex; align-items:center; justify-content:space-between; flex:1; gap:25px; max-width:850px; }
+    .model-wordmark { display:inline-flex; align-items:center; gap:8px; color:#bcb4c8; font-size:21px; font-weight:550; letter-spacing:-.6px; white-space:nowrap; }
+    .model-wordmark .symbol { font-size:26px; font-weight:400; } .model-wordmark.claude { font-family:Georgia,serif; font-size:25px; } .model-wordmark.deepseek { font-size:19px; }
+    .section { padding-block:100px; }
+    .section-heading { display:flex; justify-content:space-between; align-items:flex-end; gap:40px; margin-bottom:39px; }
+    h2 { margin-top:17px; font-size:clamp(28px,3vw,39px); letter-spacing:-1.3px; line-height:1.4; font-weight:650; }
+    .section-description { font-size:13px; line-height:1.9; color:var(--muted); max-width:310px; } .section-index { color:#a395b5; font-size:10px; letter-spacing:1px; }
+    .scenarios { padding-top:84px; background:linear-gradient(180deg,#18131f55,transparent); border-top:1px solid var(--line); }
+    .scenario-tabs { display:flex; gap:8px; padding:5px; width:fit-content; border:1px solid var(--line); border-radius:11px; background:#15121c; margin-bottom:20px; }
+    .scenario-tab { display:flex; align-items:center; gap:9px; background:transparent; border:1px solid transparent; border-radius:7px; padding:10px 23px; color:#a59baf; font-size:13px; transition:background .2s,color .2s; }
+    .scenario-tab .icon { width:16px; height:16px; } .scenario-tab[aria-selected="true"] { color:var(--accent); background:#c7adff10; border-color:#c7adff22; } .scenario-tab:hover { color:#e2d6f2; }
+    .demo-window { display:grid; grid-template-columns:.85fr 1.15fr; min-height:445px; border:1px solid #ffffff16; border-radius:17px; background:var(--surface); overflow:hidden; }
+    .demo-story { padding:37px 34px; display:flex; flex-direction:column; }
+    .tiny-tag { width:fit-content; font-size:9px; padding:4px 8px; letter-spacing:1px; border:1px solid #c7adff26; border-radius:4px; color:var(--accent); }
+    .demo-story h3 { font-size:26px; font-weight:600; line-height:1.5; margin-top:17px; letter-spacing:-.6px; }
+    .demo-story > p { color:var(--muted); font-size:13px; margin-top:14px; line-height:1.9; max-width:340px; }
+    .prompt-label { font-size:10px; color:#a99db5; margin-top:auto; padding-top:25px; margin-bottom:10px; }
+    .prompt-options { display:flex; flex-wrap:wrap; gap:8px; }
+    .prompt-option { border:1px solid #ffffff18; border-radius:6px; padding:7px 10px; background:#ffffff02; font-size:11px; color:#b7adbf; text-align:left; }
+    .prompt-option:hover,.prompt-option[aria-pressed="true"] { color:#e1d3f5; border-color:#c7adff66; background:#c7adff09; }
+    .demo-preview { padding:17px; background:#0f0d1455; border-left:1px solid var(--line); display:flex; flex-direction:column; }
+    .preview-chrome { display:flex; align-items:center; justify-content:space-between; min-height:29px; gap:10px; color:#ad9fbc; font-size:10px; }
+    .window-dots { display:flex; gap:5px; } .window-dots i { display:block; width:6px; height:6px; background:#63556e; border-radius:50%; } .window-dots i:first-child { background:#a989ba; }
+    .preview-mode { display:flex; align-items:center; gap:7px; color:#c1b2d0; } .preview-mode .icon { width:13px; height:13px; }
+    .preview-body { margin-top:12px; flex:1; min-height:316px; border-radius:8px; overflow:hidden; }
+    .portfolio { background:#e8e0f3; color:#2b193f; padding:23px 26px; min-height:316px; }
+    .portfolio-nav { display:flex; align-items:center; justify-content:space-between; font-size:9px; letter-spacing:.7px; } .portfolio-nav span:last-child { font-size:8px; }
+    .portfolio-main { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:29px; }
+    .portfolio-heading { font-size:38px; font-weight:750; letter-spacing:-2px; line-height:1.08; } .portfolio-sub { font-size:10px; color:#6c5e7c; margin-top:10px; }
+    .portfolio-star { color:#8455bc; font-size:105px; line-height:1; transform:rotate(15deg); }
+    .portfolio-projects { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:25px; }
+    .portfolio-project { border-radius:5px; min-height:64px; display:flex; align-items:flex-end; padding:10px; font-size:8px; letter-spacing:.5px; background:#c4b0df; } .portfolio-project:nth-child(2) { background:#d0e3b9; } .portfolio-project:nth-child(3) { background:#ccc0ec; }
+    .preview-caption { font-size:9px; color:#b0a0bf; margin-top:12px; display:flex; justify-content:space-between; gap:8px; } .preview-caption span:last-child { color:#b5c69e; }
+    .writing-preview { padding:28px; background:#e8e1d7; color:#30271f; min-height:316px; }
+    .writing-kicker { font-size:8px; letter-spacing:2px; color:#6c5b45; border-bottom:1px solid #30271f25; padding-bottom:14px; }
+    .writing-preview h4 { font-family:Georgia,"Songti SC",serif; font-size:26px; line-height:1.5; margin:20px 0 13px; font-weight:600; } .writing-preview p { font-size:11px; line-height:2; color:#73604f; }
+    .writing-outline { display:flex; gap:7px; margin-top:22px; } .writing-outline span { padding:7px 10px; border:1px solid #30271f26; font-size:9px; border-radius:3px; }
+    .research-preview { background:#dce5df; color:#183c30; padding:27px; min-height:316px; } .research-preview small { font-size:8px; letter-spacing:1.8px; } .research-preview h4 { font-size:23px; margin:18px 0 20px; }
+    .research-map { display:grid; grid-template-columns:1fr 1fr 1fr; gap:9px; } .research-map div { padding:15px 10px; background:#ffffff50; border:1px solid #183c3020; border-radius:5px; } .research-map b { font-size:12px; font-weight:600; } .research-map p { font-size:10px; margin-top:11px; color:#4c6d61; line-height:1.9; }
+    .research-bottom { border-top:1px solid #183c3020; padding-top:15px; margin-top:20px; font-size:9px; color:#456357; }
+    .focus-preview { background:#dce6cf; text-align:center; } .focus-kicker { margin-top:23px; font-size:9px; letter-spacing:2px; color:#4c6038; } .focus-time { font-size:77px; line-height:1.5; letter-spacing:-5px; color:#344923; } .focus-pill { display:inline-block; padding:8px 23px; background:#344923; color:#e6efd9; border-radius:30px; font-size:10px; } .focus-note { margin-top:17px; font-size:9px; color:#4c6038; }
+    .demo-footnote { margin-top:13px; text-align:right; font-size:10px; color:#a99bb5; }
+    .benefits { padding-top:6px; } .benefit-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:17px; }
+    .benefit-card { overflow:hidden; border:1px solid var(--line); border-radius:13px; padding:28px; background:#19151f80; }
+    .benefit-icon { width:35px; height:35px; border:1px solid #c7adff25; background:#c7adff0b; color:var(--accent); display:grid; place-items:center; border-radius:9px; }
+    .benefit-card h3 { font-size:19px; font-weight:600; letter-spacing:-.3px; margin-top:22px; } .benefit-card > p { color:var(--muted); font-size:12px; line-height:1.9; margin-top:9px; }
+    .benefit-art { margin-top:30px; height:100px; display:flex; align-items:center; justify-content:center; }
+    .switcher-art { gap:8px; } .switcher-art span { padding:10px; border:1px solid #ffffff15; border-radius:7px; font-size:10px; color:#b9aec6; } .switcher-art .selected { background:#c7adff12; color:var(--accent); border-color:#c7adff55; transform:translateY(-10px); }
+    .meter-art { flex-direction:column; align-items:stretch; gap:13px; padding-inline:5px; } .meter-label { display:flex; justify-content:space-between; align-items:center; color:#b5a8c1; font-size:10px; } .meter-label b { font-size:17px; color:var(--lime); font-weight:500; } .meter { display:flex; gap:4px; } .meter i { flex:1; height:20px; border-radius:2px; background:#d6f9a31b; } .meter i:nth-child(-n+5) { background:#d6f9a3b3; } .meter-note { font-size:9px; color:#ac9cba; }
+    .log-art { flex-direction:column; gap:8px; align-items:stretch; } .log-row { display:flex; align-items:center; justify-content:space-between; padding:7px 10px; background:#ffffff03; border:1px solid #ffffff08; border-radius:4px; color:#aea2bc; font-size:9px; } .log-row span:first-child { color:var(--accent); }
+    .models { border-block:1px solid var(--line); background:#17131e66; padding-block:80px; }
+    .models-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+    .model-card { border:1px solid #ffffff13; border-radius:11px; padding:25px 22px; background:var(--surface); transition:transform .25s,border-color .25s; } .model-card:hover { transform:translateY(-5px); border-color:#c7adff55; }
+    .model-card-head { display:flex; align-items:center; justify-content:space-between; } .model-emblem { width:37px; height:37px; display:grid; place-items:center; border-radius:9px; font-size:23px; background:#d5bfec0b; color:#dfd5e8; } .model-maker { font-size:9px; color:#b0a1bf; letter-spacing:.5px; }
+    .model-card h3 { font-size:22px; font-weight:550; margin-top:23px; letter-spacing:-.5px; } .model-card p { font-size:11px; color:var(--muted); margin-top:8px; } .model-tags { margin-top:22px; display:flex; gap:6px; flex-wrap:wrap; } .model-tags span { border:1px solid #ffffff13; color:#b9acc5; border-radius:4px; padding:3px 7px; font-size:9px; }
+    .models-note { margin-top:20px; color:#a69ab2; font-size:10px; display:flex; align-items:center; justify-content:space-between; gap:15px; }
+    .text-link { display:inline-flex; align-items:center; gap:8px; font-size:12px; color:var(--accent); } .text-link .icon { width:15px; height:15px; }
+    .connect-grid { display:grid; grid-template-columns:.85fr 1.15fr; gap:85px; align-items:center; } .connect-grid > *,.demo-window > * { min-width:0; } .connect-copy > p { color:var(--muted); font-size:13px; line-height:1.9; margin-top:19px; }
+    .connection-steps { margin:27px 0 0; padding:0; list-style:none; display:flex; flex-direction:column; gap:18px; } .connection-steps li { display:flex; align-items:center; gap:13px; font-size:12px; color:#c4b8d1; } .number { font-size:10px; color:var(--accent); background:#c7adff0c; width:24px; height:24px; border:1px solid #c7adff20; border-radius:50%; display:grid; place-items:center; flex-shrink:0; } .connection-steps b { font-weight:500; color:#e1d7eb; } .connection-steps small { color:#a99bb7; font-size:11px; margin-left:8px; }
+    .code-window { border:1px solid #ffffff18; border-radius:12px; background:var(--surface); overflow:hidden; box-shadow:0 25px 80px #00000014; }
+    .code-toolbar { display:flex; align-items:center; justify-content:space-between; gap:15px; padding:14px 18px; border-bottom:1px solid var(--line); font-size:10px; color:#ad9fba; } .code-toolbar-label { display:flex; align-items:center; gap:12px; }
+    .copy-button { border:1px solid #ffffff17; background:#ffffff03; padding:5px 9px; color:#c2b4d0; border-radius:5px; font-size:10px; display:flex; align-items:center; gap:6px; } .copy-button .icon { width:12px; height:12px; } .copy-button:hover { background:#ffffff0b; }
+    pre { margin:0; padding:25px 22px; overflow-x:auto; font-size:11px; line-height:2; tab-size:2; color:#c2b6cf; } pre code { font:inherit; } .code-comment { color:#ad9cbd; } .code-command { color:var(--accent); } .code-string { color:#d6e7b8; }
+    .code-bottom { border-top:1px solid var(--line); padding:12px 18px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; font-size:9px; color:#b5a6c2; } .code-bottom span:first-child { display:flex; align-items:center; gap:6px; } .code-bottom .icon { width:12px; height:12px; color:var(--lime); }
+    .integrations { display:flex; justify-content:flex-end; align-items:center; gap:13px; margin-top:16px; color:#aa9bb8; font-size:10px; flex-wrap:wrap; } .integrations span + span { border-left:1px solid #ffffff17; padding-left:13px; }
+    .pricing { padding-top:0; } .pricing-panel { overflow:hidden; display:grid; grid-template-columns:1fr 1fr; align-items:center; gap:70px; border:1px solid #c7adff26; border-radius:16px; padding:48px; background:linear-gradient(115deg,#21192e,#18151f 80%); }
+    .pricing-panel h2 { font-size:34px; } .pricing-panel h2 span { color:var(--accent); } .pricing-panel p { font-size:12px; line-height:1.9; color:#b1a2be; margin-top:17px; } .pricing-panel .text-link { margin-top:23px; }
+    .pricing-principles { display:flex; flex-direction:column; gap:23px; } .pricing-principle { display:flex; gap:16px; align-items:flex-start; } .pricing-principle > .icon { color:var(--lime); width:19px; height:19px; margin-top:3px; } .pricing-principle h3 { font-size:14px; font-weight:550; } .pricing-principle p { font-size:11px; margin-top:4px; }
+    .faq { padding-top:0; } .faq-layout { display:grid; grid-template-columns:.7fr 1.3fr; gap:85px; } .faq-intro > p { margin-top:15px; font-size:12px; color:var(--muted); } .faq-intro .text-link { margin-top:22px; }
+    details { border-bottom:1px solid #ffffff14; } details:first-child { border-top:1px solid #ffffff14; } summary { position:relative; padding:20px 35px 20px 0; cursor:pointer; list-style:none; font-size:13px; color:#d4c9df; } summary::-webkit-details-marker { display:none; } summary::after { content:"+"; position:absolute; right:4px; top:14px; font-size:23px; color:#a892bd; font-weight:300; } details[open] summary::after { content:"−"; } details > p { padding:0 24px 20px 0; font-size:12px; color:var(--muted); line-height:1.95; }
+    .closing { position:relative; overflow:hidden; padding:79px 0 91px; text-align:center; border-top:1px solid var(--line); background:radial-gradient(ellipse at 50% 100%,#9861dd18,transparent 65%); }
+    .closing::before,.closing::after { content:""; position:absolute; width:670px; height:230px; border:1px solid #c7adff0e; border-radius:50%; left:50%; top:145px; transform:translateX(-50%) rotate(-16deg); pointer-events:none; } .closing::after { transform:translateX(-50%) rotate(16deg); }
+    .closing .eyebrow { justify-content:center; font-size:9px; } .closing .eyebrow::before { display:none; } .closing h2 { font-size:43px; position:relative; } .closing h2 span { color:var(--accent); } .closing p { margin-top:17px; font-size:13px; color:#b7a8c4; position:relative; } .closing .btn { position:relative; margin-top:28px; } .closing-note { margin-top:15px !important; font-size:10px !important; color:#a295b0 !important; }
+    footer { border-top:1px solid var(--line); padding:34px 0 22px; } .footer-main { display:flex; align-items:center; justify-content:space-between; gap:30px; } .footer-brand { display:flex; align-items:center; gap:25px; } .footer-brand .brand { font-size:19px; } .footer-brand .brand-icon { width:29px; height:29px; } .footer-brand p { color:#a99bb7; font-size:11px; } .footer-links { display:flex; align-items:center; gap:23px; font-size:11px; color:#b4a5c1; } .footer-bottom { display:flex; justify-content:space-between; gap:20px; border-top:1px solid var(--line); padding-top:20px; margin-top:28px; font-size:9px; color:#a092ae; flex-wrap:wrap; } .footer-bottom a:hover { color:var(--accent); }
+    .reveal { opacity:1; transform:none; }
+    @media (prefers-reduced-motion:no-preference) { .motion-ready .reveal { opacity:0; transform:translateY(17px); transition:opacity .65s,transform .65s; } .motion-ready .reveal.visible { opacity:1; transform:none; } }
+    @media (min-width:1600px) { .hero-main { min-height:670px; } }
+    @media (max-width:1100px) { .brand-en { display:none; } .nav-links { gap:20px; } .hero-art { margin-right:-15px; } .float-claude { left:36px; } .float-gpt { right:-5px; } h1 { font-size:61px; } .connect-grid,.faq-layout { gap:45px; } .model-wordmark { font-size:18px; } .model-wordmark.qwen { display:none; } .pricing-panel { gap:40px; } }
+    @media (max-width:800px) {
+      .container { width:calc(100% - 40px); } .nav { height:68px; gap:15px; } .brand { font-size:21px; } .brand-icon { width:30px; height:30px; } .nav-links { gap:18px; font-size:12px; } .nav-links a:nth-last-child(-n+2) { display:none; } .nav-actions { gap:14px; }
+      .hero-main { min-height:auto; padding-block:57px 45px; } h1 { font-size:49px; letter-spacing:-2.5px; } .hero-description { font-size:13px; } .hero-art { height:380px; margin-left:-30px; margin-right:-10px; } .float-label { padding:9px 11px; font-size:11px; gap:7px; } .float-label small { font-size:7px; } .model-symbol { font-size:22px; width:22px; } .float-claude { top:47px; left:35px; } .float-gpt { top:145px; right:-5px; } .float-gemini { left:76px; bottom:26px; } .art-coordinate { font-size:7px; top:10px; right:10px; } .art-caption { font-size:7px; right:8px; bottom:0; }
+      .hero-actions { gap:10px; } .hero-actions .btn { padding-inline:16px; font-size:12px; gap:9px; } .hero-note { font-size:9px; } .model-strip { gap:20px; } .model-wordmarks { gap:20px; } .model-wordmark.deepseek { display:none; } .model-strip-caption { font-size:9px; }
+      .section { padding-block:70px; } .section-heading { gap:25px; margin-bottom:28px; } .section-description { max-width:220px; font-size:12px; } h2 { font-size:29px; } .demo-story { padding:27px 23px; } .demo-story h3 { font-size:23px; } .demo-story > p { font-size:12px; } .demo-window { grid-template-columns:.9fr 1.1fr; } .demo-preview { padding:12px; } .portfolio { padding:20px; } .portfolio-heading { font-size:29px; } .portfolio-star { font-size:75px; } .portfolio-projects { margin-top:33px; } .portfolio-project { padding:7px; font-size:6px; }
+      .benefits { padding-top:0; } .benefit-grid { gap:12px; } .benefit-card { padding:22px 18px; } .benefit-card h3 { font-size:17px; } .benefit-card > p { font-size:11px; } .switcher-art { gap:5px; } .switcher-art span { padding:8px 6px; font-size:8px; } .models-grid { gap:10px; } .model-card { padding:20px 15px; } .model-maker { font-size:8px; } .model-card h3 { font-size:19px; } .model-tags span { font-size:8px; } .connect-grid { gap:30px; } .connection-steps small { display:block; margin-left:0; } pre { padding:22px 16px; font-size:10px; } .pricing { padding-top:0; } .pricing-panel { padding:32px; gap:30px; } .pricing-panel h2 { font-size:28px; } .faq { padding-top:0; } .faq-layout { gap:35px; } .footer-brand { gap:15px; } .footer-links { gap:15px; } .footer-brand p { max-width:140px; font-size:10px; }
     }
-
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      font-family: "Inter", "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(900px 500px at 15% -10%, rgba(56, 189, 248, 0.16), transparent 60%),
-        radial-gradient(800px 500px at 85% 0%, rgba(110, 231, 183, 0.12), transparent 55%),
-        var(--bg);
-      line-height: 1.65;
-      -webkit-font-smoothing: antialiased;
+    @media (max-width:600px) {
+      html { scroll-padding-top:85px; } .container { width:calc(100% - 36px); } .nav { height:65px; } .brand-en { display:inline; padding-left:10px; margin-left:0; font-size:8px; letter-spacing:1.2px; } .brand { gap:8px; font-size:20px; } .nav-actions { gap:12px; } .nav-actions > a:first-child { display:none; } .btn-small { min-height:34px; font-size:11px; padding:8px 12px; } .menu-toggle { display:block; } .menu-toggle .icon { width:17px; height:17px; }
+      .nav-links { display:none; position:absolute; left:0; top:65px; width:100%; padding:16px 24px 22px; background:#15111cf5; border-bottom:1px solid #ffffff1a; flex-direction:column; align-items:stretch; gap:0; } .nav-links a { padding:12px 0; } .nav-links a:nth-last-child(-n+2) { display:block; } .nav-links.open { display:flex; }
+      .hero-main { grid-template-columns:1fr; padding-block:44px 18px; } .hero-copy { text-align:center; } .hero .eyebrow { justify-content:center; font-size:8px; letter-spacing:1.5px; } h1 { margin-block:23px 19px; font-size:clamp(44px,12vw,62px); line-height:1.23; letter-spacing:-2.5px; } .hero-description { max-width:330px; font-size:12px; margin-inline:auto; line-height:2; } .hero-actions { justify-content:center; margin-top:24px; gap:10px; } .hero-actions .btn { min-height:46px; padding-inline:18px; font-size:12px; } .hero-note { justify-content:center; margin-top:17px; font-size:9px; }
+      .hero-art { height:318px; margin:14px -8px 0; max-width:430px; width:calc(100% + 16px); justify-self:center; } .float-claude { left:38px; top:33px; } .float-gpt { right:10px; top:133px; } .float-gemini { left:77px; bottom:14px; } .float-label { padding:8px 10px; font-size:10px; } .model-symbol { font-size:19px; width:20px; } .float-label small { font-size:6px; } .art-coordinate { top:24px; right:23px; } .art-caption { bottom:3px; right:14px; font-size:6px; }
+      .model-strip { flex-direction:column; gap:18px; padding-block:22px 26px; } .model-strip-caption br { display:none; } .model-strip-caption { font-size:8px; letter-spacing:1.8px; } .model-wordmarks { width:100%; gap:12px; } .model-wordmark { font-size:17px; gap:5px; } .model-wordmark.claude { font-size:21px; } .model-wordmark .symbol { font-size:22px; } .model-wordmark.deepseek { display:inline-flex; font-size:14px; } .model-wordmark.deepseek .symbol { display:none; }
+      .section { padding-block:55px; } .eyebrow { font-size:9px; letter-spacing:1.6px; } h2 { font-size:27px; letter-spacing:-1px; margin-top:15px; } .section-heading { flex-direction:column; align-items:flex-start; gap:16px; margin-bottom:25px; } .section-description { max-width:none; font-size:12px; } .section-index { display:none; }
+      .scenario-tabs { width:100%; gap:3px; padding:4px; margin-bottom:14px; } .scenario-tab { flex:1; justify-content:center; font-size:11px; padding:10px 5px; gap:7px; } .scenario-tab .icon { width:14px; height:14px; } .demo-window { grid-template-columns:1fr; border-radius:12px; } .demo-story { padding:25px 23px; } .demo-story h3 { font-size:23px; margin-top:14px; } .demo-story > p { margin-top:10px; max-width:none; } .prompt-label { padding-top:20px; margin-bottom:9px; } .prompt-option { font-size:10px; } .demo-preview { border-left:0; border-top:1px solid var(--line); padding:13px; } .portfolio { min-height:284px; padding:22px; } .portfolio-heading { font-size:35px; } .portfolio-star { font-size:90px; } .portfolio-main { margin-top:26px; } .portfolio-projects { margin-top:26px; } .portfolio-project { min-height:58px; font-size:7px; padding:8px; } .preview-body { min-height:284px; } .preview-caption { font-size:8px; } .demo-footnote { text-align:left; line-height:1.8; font-size:9px; }
+      .benefits { padding-top:0; } .benefit-grid { grid-template-columns:1fr; gap:12px; } .benefit-card { padding:24px; display:grid; grid-template-columns:1fr 130px; column-gap:15px; } .benefit-icon { width:30px; height:30px; border-radius:7px; } .benefit-icon .icon { width:17px; height:17px; } .benefit-card h3 { margin-top:17px; font-size:17px; } .benefit-card > p { grid-column:1; font-size:11px; } .benefit-art { grid-column:2; grid-row:1 / 4; margin-top:0; align-self:center; height:95px; } .switcher-art { flex-wrap:wrap; gap:5px; } .switcher-art span { padding:8px; } .switcher-art .selected { transform:none; } .meter-label { font-size:8px; } .meter-label b { font-size:12px; } .meter-art { gap:10px; } .meter { gap:3px; } .meter i { height:16px; } .meter-note { font-size:7px; } .log-row { padding:7px; font-size:7px; }
+      .models-grid { grid-template-columns:1fr 1fr; gap:12px; } .model-card { padding:20px 17px; } .model-card h3 { margin-top:20px; font-size:21px; } .model-card p { font-size:10px; } .model-tags { margin-top:18px; } .model-tags span { font-size:8px; padding:3px 6px; } .models-note { align-items:flex-start; flex-direction:column; gap:15px; font-size:9px; }
+      .connect-grid { grid-template-columns:1fr; gap:27px; } .connect-copy > p { font-size:12px; max-width:330px; } .connection-steps { gap:15px; margin-top:23px; } .connection-steps small { display:inline; margin-left:7px; font-size:10px; } pre { font-size:10px; padding:20px 17px; } .integrations { font-size:9px; gap:10px; justify-content:flex-start; } .integrations span + span { padding-left:10px; }
+      .pricing { padding-top:0; } .pricing-panel { grid-template-columns:1fr; padding:28px 24px; gap:31px; border-radius:12px; } .pricing-panel h2 { font-size:28px; } .pricing-panel p { font-size:11px; } .pricing-panel .text-link { margin-top:19px; } .pricing-principles { padding-top:26px; border-top:1px solid var(--line); gap:23px; } .pricing-principle h3 { font-size:13px; } .pricing-principle p { font-size:11px; }
+      .faq { padding-top:0; } .faq-layout { grid-template-columns:1fr; gap:27px; } .faq-intro .text-link { margin-top:14px; } summary { font-size:12px; padding-block:19px; } details > p { font-size:11px; } .closing { padding-block:58px 64px; } .closing h2 { font-size:31px; } .closing p { font-size:12px; max-width:290px; margin-inline:auto; line-height:1.9; } .closing .btn { margin-top:24px; } .closing::before,.closing::after { width:440px; height:200px; top:130px; }
+      footer { padding-top:27px; } .footer-main { align-items:flex-start; gap:25px; flex-direction:column; } .footer-brand { justify-content:space-between; width:100%; } .footer-brand p { max-width:none; font-size:10px; } .footer-links { flex-wrap:wrap; gap:23px; font-size:10px; } .footer-bottom { margin-top:24px; padding-top:17px; font-size:8px; gap:12px; }
+      .writing-preview,.research-preview { padding:24px; min-height:284px; } .writing-preview h4 { font-size:24px; } .writing-outline span { font-size:8px; padding:6px 9px; } .research-preview h4 { font-size:21px; } .research-map { gap:6px; } .research-map div { padding:12px 8px; } .research-map b { font-size:11px; } .research-map p { font-size:9px; }
     }
-
-    a { color: inherit; text-decoration: none; }
-    img, svg { display: block; }
-    .container { width: min(var(--max), 100% - 48px); margin: 0 auto; }
-
-    /* ---------- Header ---------- */
-    .header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      backdrop-filter: blur(16px);
-      background: rgba(7, 11, 18, 0.72);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    }
-    .nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 70px;
-      gap: 24px;
-    }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      letter-spacing: 0.2px;
-      white-space: nowrap;
-    }
-    .brand-mark {
-      width: 34px;
-      height: 34px;
-      border-radius: 10px;
-      display: grid;
-      place-items: center;
-      background: linear-gradient(135deg, rgba(110, 231, 183, 0.22), rgba(56, 189, 248, 0.18));
-      border: 1px solid rgba(110, 231, 183, 0.35);
-      color: var(--accent);
-      font-size: 15px;
-      font-weight: 800;
-    }
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 26px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-    .nav-links a:hover { color: var(--text); }
-    .nav-actions { display: flex; align-items: center; gap: 10px; }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      border-radius: 12px;
-      padding: 10px 18px;
-      font-size: 14px;
-      font-weight: 600;
-      border: 1px solid transparent;
-      transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
-      white-space: nowrap;
-      cursor: pointer;
-    }
-    .btn:hover { transform: translateY(-1px); }
-    .btn-primary {
-      color: #04121a;
-      background: linear-gradient(135deg, var(--accent), #4ade80);
-      box-shadow: 0 10px 30px rgba(110, 231, 183, 0.18);
-    }
-    .btn-primary:hover { background: linear-gradient(135deg, #86efc7, #5eead4); }
-    .btn-ghost {
-      color: var(--text);
-      border-color: var(--border);
-      background: rgba(255, 255, 255, 0.03);
-    }
-    .btn-ghost:hover { background: rgba(255, 255, 255, 0.07); }
-    .btn-lg { padding: 14px 26px; font-size: 15px; border-radius: 14px; }
-
-    .menu-toggle {
-      display: none;
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text);
-      cursor: pointer;
-    }
-    .menu-toggle span {
-      display: block;
-      width: 16px;
-      height: 1.5px;
-      margin: 3px auto;
-      background: currentColor;
-    }
-
-    /* ---------- Hero ---------- */
-    .hero { padding: 90px 0 70px; }
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 48px;
-      align-items: center;
-    }
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(110, 231, 183, 0.28);
-      background: rgba(110, 231, 183, 0.08);
-      color: #a7f3d0;
-      font-size: 12.5px;
-      font-weight: 600;
-      letter-spacing: 0.2px;
-    }
-    .badge::before {
-      content: "";
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 12px var(--accent);
-    }
-    h1 {
-      margin: 22px 0 18px;
-      font-size: clamp(38px, 5.2vw, 62px);
-      line-height: 1.08;
-      letter-spacing: -1.5px;
-      font-weight: 800;
-    }
-    .gradient-text {
-      background: linear-gradient(100deg, #6ee7b7 0%, #38bdf8 55%, #a78bfa 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-    .hero-sub {
-      margin: 0 0 28px;
-      color: var(--muted);
-      font-size: 16.5px;
-      max-width: 560px;
-    }
-    .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; }
-    .hero-note { margin-top: 16px; color: #6b7a91; font-size: 12.5px; }
-
-    .hero-stats {
-      margin-top: 34px;
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
-      max-width: 560px;
-    }
-    .stat {
-      padding: 12px 14px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: var(--card);
-    }
-    .stat strong { display: block; font-size: 15px; }
-    .stat span { color: var(--muted); font-size: 12px; }
-
-    /* ---------- Code card ---------- */
-    .code-card {
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
-      overflow: hidden;
-    }
-    .code-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(0, 0, 0, 0.2);
-    }
-    .dots { display: flex; gap: 6px; }
-    .dots i { width: 9px; height: 9px; border-radius: 50%; background: #334155; display: block; }
-    .dots i:nth-child(1) { background: #f87171; }
-    .dots i:nth-child(2) { background: #fbbf24; }
-    .dots i:nth-child(3) { background: #34d399; }
-    .code-title { color: var(--muted); font-size: 12px; }
-    .copy-btn {
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--muted);
-      border-radius: 8px;
-      padding: 5px 10px;
-      font-size: 12px;
-      cursor: pointer;
-    }
-    .copy-btn:hover { color: var(--text); }
-    pre {
-      margin: 0;
-      padding: 20px;
-      overflow-x: auto;
-      font-size: 12.8px;
-      line-height: 1.65;
-      color: #cbd5e1;
-      font-family: "JetBrains Mono", "Cascadia Code", Consolas, monospace;
-    }
-    .tok-key { color: #fbbf24; }
-    .tok-str { color: #86efac; }
-    .tok-cmd { color: #7dd3fc; }
-
-    /* ---------- Sections ---------- */
-    section { padding: 78px 0; }
-    .section-head { max-width: 660px; margin-bottom: 36px; }
-    .eyebrow {
-      color: var(--accent);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 1.6px;
-      text-transform: uppercase;
-    }
-    h2 {
-      margin: 10px 0 12px;
-      font-size: clamp(28px, 3.4vw, 40px);
-      line-height: 1.15;
-      letter-spacing: -0.8px;
-    }
-    .section-head p { margin: 0; color: var(--muted); font-size: 15.5px; }
-
-    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-    .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
-
-    .card {
-      border: 1px solid var(--border);
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 24px;
-      transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
-    }
-    .card:hover {
-      border-color: rgba(110, 231, 183, 0.3);
-      background: var(--card-strong);
-      transform: translateY(-2px);
-    }
-    .icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      display: grid;
-      place-items: center;
-      background: rgba(56, 189, 248, 0.09);
-      border: 1px solid rgba(56, 189, 248, 0.18);
-      color: var(--accent-2);
-      margin-bottom: 16px;
-    }
-    .card h3 { margin: 0 0 8px; font-size: 17px; }
-    .card p { margin: 0; color: var(--muted); font-size: 14px; }
-
-    /* ---------- Models ---------- */
-    .model-card { padding: 18px; }
-    .model-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .model-name { font-weight: 700; font-size: 15px; }
-    .model-tag {
-      font-size: 11px;
-      color: #a7f3d0;
-      border: 1px solid rgba(110, 231, 183, 0.25);
-      background: rgba(110, 231, 183, 0.08);
-      border-radius: 999px;
-      padding: 2px 9px;
-      white-space: nowrap;
-    }
-    .model-desc { margin-top: 8px; color: var(--muted); font-size: 12.5px; }
-    .models-note { margin-top: 18px; color: #6b7a91; font-size: 12.5px; }
-
-    /* ---------- Pricing ---------- */
-    .pricing-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-    .price-card { display: flex; flex-direction: column; gap: 14px; position: relative; }
-    .price-card.featured {
-      border-color: rgba(110, 231, 183, 0.35);
-      background: linear-gradient(180deg, rgba(110, 231, 183, 0.08), rgba(255, 255, 255, 0.03));
-    }
-    .price-label { color: var(--muted); font-size: 13px; }
-    .price-main { font-size: 34px; font-weight: 800; letter-spacing: -1px; line-height: 1; }
-    .price-main small { font-size: 13px; font-weight: 500; color: var(--muted); letter-spacing: 0; }
-    .price-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 9px; color: var(--muted); font-size: 13.5px; }
-    .price-list li { display: flex; gap: 8px; align-items: flex-start; }
-    .price-list li::before { content: "✓"; color: var(--accent); font-weight: 800; }
-    .price-card .btn { margin-top: auto; width: 100%; }
-
-    /* ---------- Steps ---------- */
-    .steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; counter-reset: step; }
-    .step {
-      counter-increment: step;
-      position: relative;
-      padding: 22px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--card);
-    }
-    .step::before {
-      content: "0" counter(step);
-      display: block;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 1px;
-      color: var(--accent);
-      margin-bottom: 10px;
-    }
-    .step h3 { margin: 0 0 6px; font-size: 15.5px; }
-    .step p { margin: 0; color: var(--muted); font-size: 13px; }
-
-    /* ---------- FAQ ---------- */
-    .faq { display: grid; gap: 10px; max-width: 820px; }
-    details {
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: var(--card);
-      padding: 0 18px;
-    }
-    details[open] { background: var(--card-strong); }
-    summary {
-      cursor: pointer;
-      list-style: none;
-      padding: 16px 0;
-      font-size: 15px;
-      font-weight: 600;
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-    }
-    summary::-webkit-details-marker { display: none; }
-    summary::after { content: "+"; color: var(--muted); font-weight: 400; font-size: 18px; }
-    details[open] summary::after { content: "−"; }
-    details p { margin: 0 0 16px; color: var(--muted); font-size: 14px; }
-
-    /* ---------- Final CTA ---------- */
-    .final-cta {
-      text-align: center;
-      border: 1px solid rgba(110, 231, 183, 0.22);
-      border-radius: 24px;
-      padding: 56px 28px;
-      background:
-        radial-gradient(600px 260px at 50% 0%, rgba(110, 231, 183, 0.12), transparent 70%),
-        rgba(255, 255, 255, 0.025);
-    }
-    .final-cta h2 { margin-top: 0; }
-    .final-cta p { color: var(--muted); margin: 0 auto 24px; max-width: 560px; }
-
-    /* ---------- Footer ---------- */
-    footer {
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-      padding: 40px 0 28px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-    .footer-grid {
-      display: flex;
-      justify-content: space-between;
-      gap: 24px;
-      flex-wrap: wrap;
-      margin-bottom: 24px;
-    }
-    .footer-brand p { margin: 8px 0 0; max-width: 360px; }
-    .footer-links { display: flex; gap: 28px; flex-wrap: wrap; }
-    .footer-links a:hover { color: var(--text); }
-    .footer-bottom {
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-      padding-top: 18px;
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: #5f6d82;
-      font-size: 12px;
-    }
-
-    /* ---------- Responsive ---------- */
-    @media (max-width: 960px) {
-      .hero-grid { grid-template-columns: 1fr; gap: 36px; }
-      .grid-4, .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-    @media (max-width: 720px) {
-      .nav-links { display: none; }
-      .menu-toggle { display: block; }
-      .nav-actions .btn-ghost { display: none; }
-      .nav.open .nav-links {
-        display: flex;
-        position: absolute;
-        top: 70px;
-        left: 0;
-        right: 0;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0;
-        padding: 10px 24px 18px;
-        background: rgba(7, 11, 18, 0.98);
-        border-bottom: 1px solid var(--border);
-      }
-      .nav.open .nav-links a { padding: 10px 0; width: 100%; }
-      .hero { padding: 60px 0 50px; }
-      .grid-3, .grid-4, .pricing-grid, .steps { grid-template-columns: 1fr; }
-      .hero-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      section { padding: 58px 0; }
-      .footer-grid { flex-direction: column; }
-    }
+    @media (max-width:360px) { .brand-en { display:none; } .hero-actions .btn { padding-inline:14px; font-size:11px; } .model-wordmark.deepseek { display:none; } .benefit-card { grid-template-columns:1fr 110px; padding:20px; } .connection-steps small { display:block; margin-left:0; } .model-tags { gap:4px; } .model-tags span { padding-inline:4px; } }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation:none !important; transition:none !important; } }
   </style>
 </head>
 <body>
-  <header class="header">
-    <div class="container nav" id="nav">
-      <a class="brand" href="#top">
-        <span class="brand-mark">鹊</span>
-        <span data-site-name>鹊桥</span>
-      </a>
-      <nav class="nav-links">
-        <a href="#features">功能</a>
-        <a href="#models">模型</a>
-        <a href="#pricing">价格</a>
-        <a href="#how">接入</a>
-        <a href="#faq">常见问题</a>
-      </nav>
-      <div class="nav-actions">
-        <a class="btn btn-ghost" data-panel-url href="#">控制台</a>
-        <a class="btn btn-primary" data-register-url href="#">免费注册</a>
-        <button class="menu-toggle" id="menuToggle" aria-label="打开菜单">
-          <span></span><span></span><span></span>
-        </button>
+  <a class="skip" href="#main">跳转到主要内容</a>
+  <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true"><defs>
+    <symbol id="i-bridge" viewBox="0 0 40 40"><path d="M5 31V23a15 15 0 0 1 30 0v8M5 31h30M14 31V22a6 6 0 0 1 12 0v9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="m29 6 1.2-3L31.5 6l3 1.2-3 1.3-1.3 3L29 8.5l-3-1.3Z" fill="currentColor"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-up-right" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-13-2 16"/></symbol>
+    <symbol id="i-pen" viewBox="0 0 24 24"><path d="m16 3 5 5-12 12-6 1 1-6Z M13 6l5 5"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3 2.6 6.4L21 12l-6.4 2.6L12 21l-2.6-6.4L3 12l6.4-2.6ZM20 2v4m-2-2h4"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-switch" viewBox="0 0 24 24"><path d="M3 7h17m-4-4 4 4-4 4M21 17H4m4-4-4 4 4 4"/></symbol>
+    <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M20 8V5H5a2 2 0 0 0 0 4h16v11H5a2 2 0 0 1-2-2V7m18 6h-5v4h5M17 15h1"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 4v16h17M8 15l4-5 4 3 5-7"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V3H3v13h5"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+  </defs></svg>
+
+  <header class="header"><div class="container nav">
+    <a class="brand" href="#top"><svg class="brand-icon" aria-hidden="true"><use href="#i-bridge"/></svg><span data-site-name>鹊桥</span><span class="brand-en">QUEQIAO</span></a>
+    <nav class="nav-links" id="navLinks" aria-label="主导航"><a href="#scenarios">灵感实验室</a><a href="#models">模型宇宙</a><a href="#connect">轻松接入</a><a href="#pricing">用量与价格</a></nav>
+    <div class="nav-actions"><a data-panel-url href="https://api.queqiaohub.com/dashboard" target="_top">控制台</a><a class="btn btn-secondary btn-small" data-register-url href="https://api.queqiaohub.com/register" target="_top">开始创造 <svg class="icon" aria-hidden="true"><use href="#i-up-right"/></svg></a><button type="button" class="menu-toggle" id="menuToggle" aria-controls="navLinks" aria-expanded="false" aria-label="打开导航菜单"><svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg></button></div>
+  </div></header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="heroTitle"><div class="container hero-main">
+      <div class="hero-copy"><div class="eyebrow mono">YOUR IDEAS. SUPERCHARGED.</div><h1 id="heroTitle">让好想法，<br/><em>即刻发生。</em></h1><p class="hero-description">从脑海里的「要不试试」，到屏幕上的「真的做到了」。<br/>用<strong>一个 API Key</strong> 连接主流 AI 模型，<br/>写代码、做内容、探索新知，接住你的每一次灵光。</p><div class="hero-actions"><a class="btn btn-primary" data-register-url href="https://api.queqiaohub.com/register" target="_top">开启我的创造 <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="btn btn-secondary" href="#scenarios">看看能做什么 <svg class="icon" aria-hidden="true"><use href="#i-up-right"/></svg></a></div><p class="hero-note"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>一个 Key · 多种可能 · 按实际用量付费</p></div>
+      <div class="hero-art" aria-hidden="true"><span class="art-coordinate mono">IMAGINATION → REALITY<br/>BRIDGE_001 / ∞</span>
+        <svg class="bridge-svg" viewBox="0 0 650 490" fill="none"><defs>
+          <linearGradient id="bridgeGradient" x1="204" y1="290" x2="424" y2="142" gradientUnits="userSpaceOnUse"><stop stop-color="#8656bb"/><stop offset=".45" stop-color="#eee1ff"/><stop offset="1" stop-color="#b78bef"/></linearGradient>
+          <linearGradient id="bridgeSide" x1="247" y1="317" x2="383" y2="151" gradientUnits="userSpaceOnUse"><stop stop-color="#35233e"/><stop offset=".55" stop-color="#80609a"/><stop offset="1" stop-color="#c4a6e1"/></linearGradient>
+          <linearGradient id="orbitGradient" x1="66" y1="374" x2="579" y2="149" gradientUnits="userSpaceOnUse"><stop stop-color="#bc8aff" stop-opacity="0"/><stop offset=".4" stop-color="#c7adff" stop-opacity=".7"/><stop offset=".8" stop-color="#d6f9a3" stop-opacity=".5"/><stop offset="1" stop-color="#c7adff" stop-opacity="0"/></linearGradient>
+          <radialGradient id="halo"><stop stop-color="#aa68e7" stop-opacity=".17"/><stop offset="1" stop-color="#aa68e7" stop-opacity="0"/></radialGradient>
+          <pattern id="artGrid" width="36" height="36" patternUnits="userSpaceOnUse"><path d="M36 0H0v36" stroke="#c7adff" stroke-opacity=".045"/></pattern>
+        </defs>
+        <ellipse cx="330" cy="263" rx="275" ry="205" fill="url(#halo)"/><rect x="64" y="66" width="522" height="370" fill="url(#artGrid)"/>
+        <g stroke="#b094d4" stroke-opacity=".15"><ellipse cx="328" cy="261" rx="238" ry="115" transform="rotate(-25 328 261)"/><ellipse cx="328" cy="261" rx="270" ry="143" transform="rotate(-25 328 261)"/><ellipse cx="328" cy="261" rx="212" ry="146" transform="rotate(34 328 261)"/></g>
+        <ellipse class="orbit-trail" cx="328" cy="261" rx="270" ry="143" transform="rotate(-25 328 261)" stroke="#c7adff" stroke-opacity=".28"/>
+        <path d="M69 373C164 445 505 290 583 128" stroke="url(#orbitGradient)" stroke-width="1.5"/>
+        <g fill="#d1bae9"><circle cx="150" cy="340" r="3"/><circle cx="523" cy="180" r="3"/><circle cx="496" cy="361" r="2"/><circle cx="195" cy="112" r="2"/><circle cx="335" cy="434" r="2"/></g><g stroke="#c7adff" stroke-opacity=".5"><path d="M97 208h10m-5-5v10M474 91h8m-4-4v8M539 391h10m-5-5v10"/></g>
+        <ellipse cx="333" cy="352" rx="98" ry="16" fill="#000" fill-opacity=".22"/>
+        <g class="bridge-core"><path d="m218 318 34 18v-84c0-56 33-100 79-100 24 0 44 8 59 24l-32-24c-16-15-35-23-60-23-46 0-80 44-80 101Z" fill="url(#bridgeSide)"/><path d="M252 336v-84c0-56 33-100 79-100s79 44 79 100v84h-47v-84c0-29-12-49-32-49s-32 20-32 49v84Z" fill="url(#bridgeGradient)"/><path d="m299 336-28-17v-68c0-30 10-50 28-58 15-7 30-6 42 12-3-1-6-2-10-2-20 0-32 20-32 49Z" fill="#32233f"/>
+          <path d="M252 335v-83c0-56 33-100 79-100s79 44 79 100v83" stroke="#f2e7ff" stroke-opacity=".65" stroke-width="1.2"/>
+          <path d="M258 335v-83c0-52 30-94 73-94s73 42 73 94v83M264 335v-83c0-48 27-88 67-88s67 40 67 88v83M270 335v-83c0-44 24-82 61-82s61 38 61 82v83M276 335v-83c0-41 21-76 55-76s55 35 55 76v83M282 335v-83c0-37 18-70 49-70s49 33 49 70v83M288 335v-83c0-33 15-64 43-64s43 31 43 64v83M294 335v-83c0-30 13-58 37-58s37 28 37 58v83" stroke="#352044" stroke-opacity=".27"/>
+          <path d="m218 318 34 18h47l-28-17ZM363 336h47l-29-17h-18Z" fill="#b28ad3" fill-opacity=".4"/><path d="M244 344h177" stroke="#d7baf1" stroke-opacity=".4"/><path d="m332 97 5.5 15.5L353 118l-15.5 5.5L332 139l-5.5-15.5L311 118l15.5-5.5Z" fill="#d6f9a3"/><path d="m358 89 2.5 7.5L368 99l-7.5 2.5L358 109l-2.5-7.5L348 99l7.5-2.5Z" fill="#d6f9a3" fill-opacity=".5"/>
+        </g><path d="M68 375C196 390 464 319 578 157" stroke="url(#orbitGradient)" stroke-width="1.5"/><circle cx="449" cy="284" r="4" fill="#d6f9a3"/><circle cx="449" cy="284" r="9" stroke="#d6f9a3" stroke-opacity=".2"/></svg>
+        <div class="float-label float-claude"><span class="model-symbol" style="color:#e5b99b">✳</span><div><b>Claude</b><small class="mono">THINK DEEPER</small></div></div><div class="float-label float-gpt"><span class="model-symbol" style="color:#d6f9a3">◎</span><div><b>GPT</b><small class="mono">BUILD SOMETHING</small></div></div><div class="float-label float-gemini"><span class="model-symbol" style="color:#b2a5fa">✦</span><div><b>Gemini</b><small class="mono">EXPLORE MORE</small></div></div><span class="art-caption mono">ONE KEY. ENDLESS POSSIBILITIES.</span>
       </div>
-    </div>
-  </header>
+    </div><div class="container model-strip"><p class="model-strip-caption mono">BIG MINDS.<br/>ONE LITTLE KEY.</p><div class="model-wordmarks" aria-label="模型家族：GPT、Claude、Gemini、DeepSeek、Qwen"><span class="model-wordmark"><span class="symbol" aria-hidden="true">◎</span>GPT</span><span class="model-wordmark claude"><span class="symbol" aria-hidden="true">✳</span>Claude</span><span class="model-wordmark"><span class="symbol" aria-hidden="true">✦</span>Gemini</span><span class="model-wordmark deepseek"><span class="symbol" aria-hidden="true">≈</span>deepseek</span><span class="model-wordmark qwen"><span class="symbol" aria-hidden="true">⌘</span>Qwen</span></div></div></section>
 
-  <main id="top">
-    <!-- Hero -->
-    <section class="hero">
-      <div class="container hero-grid">
-        <div>
-          <span class="badge">OpenAI 兼容 · 多模型聚合</span>
-          <h1>一个 API Key，<br /><span class="gradient-text">接入主流大模型</span></h1>
-          <p class="hero-sub">
-            统一接口调用 GPT、Claude、Gemini、DeepSeek 等模型。按量计费，充值即用，
-            自带用量统计和 API Key 管理，兼容 OpenAI SDK 与常见客户端。
-          </p>
-          <div class="hero-cta">
-            <a class="btn btn-primary btn-lg" data-register-url href="#">免费注册</a>
-            <a class="btn btn-ghost btn-lg" href="#pricing">查看价格</a>
-          </div>
-          <p class="hero-note">注册后创建 API Key，替换 Base URL 即可接入。</p>
+    <section class="section scenarios" id="scenarios" aria-labelledby="scenariosTitle"><div class="container">
+      <div class="section-heading reveal"><div><div class="eyebrow mono">THE IDEA LAB / 灵感实验室</div><h2 id="scenariosTitle">从「有个想法」，<br/>到「真做出来」。</h2></div><p class="section-description">你负责天马行空。<br/>让合适的 AI，陪你把下一步走出来。</p></div>
+      <div class="reveal"><div class="scenario-tabs" role="tablist" aria-label="探索 AI 使用场景"><button class="scenario-tab" type="button" role="tab" id="tab-code" aria-selected="true" aria-controls="scenarioPanel" data-scene="code"><svg class="icon" aria-hidden="true"><use href="#i-code"/></svg>编程搭子</button><button class="scenario-tab" type="button" role="tab" id="tab-write" aria-selected="false" aria-controls="scenarioPanel" data-scene="write" tabindex="-1"><svg class="icon" aria-hidden="true"><use href="#i-pen"/></svg>内容共创</button><button class="scenario-tab" type="button" role="tab" id="tab-learn" aria-selected="false" aria-controls="scenarioPanel" data-scene="learn" tabindex="-1"><svg class="icon" aria-hidden="true"><use href="#i-spark"/></svg>学习研究</button></div>
+      <div class="demo-window" role="tabpanel" id="scenarioPanel" aria-labelledby="tab-code" tabindex="0"><div class="demo-story"><span class="tiny-tag mono" id="sceneTag">FROM IDEA TO YOUR FIRST SHIP</span><h3 id="sceneTitle">那个一直想做的小项目，<br/>今天就开个头。</h3><p id="sceneDescription">个人网站、周末小工具，或是一个大胆的产品原型。把想法交给 AI，在你熟悉的编辑器里，一起把第一版做出来。</p><span class="prompt-label">换一个灵感试试看 ↙</span><div class="prompt-options" id="promptOptions" aria-label="选择演示示例"><button class="prompt-option" type="button" aria-pressed="true" data-example="0">做一个个人作品集</button><button class="prompt-option" type="button" aria-pressed="false" data-example="1">做一个专注计时器</button></div></div>
+        <div class="demo-preview"><div class="preview-chrome"><span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="mono" id="previewFilename">my-first-portfolio / preview</span><span class="preview-mode"><svg class="icon" aria-hidden="true"><use href="#i-spark"/></svg>灵感预览</span></div><div class="preview-body" id="previewBody"><div class="portfolio"><div class="portfolio-nav mono"><b>HELLO, WORLD.</b><span>WORK　ABOUT　↗</span></div><div class="portfolio-main"><div><div class="portfolio-heading">A little curious.<br/>A lot creative.</div><p class="portfolio-sub">设计、代码，还有一些不按常理的想法。</p></div><span class="portfolio-star" aria-hidden="true">✳</span></div><div class="portfolio-projects mono"><div class="portfolio-project">01 / PLAYFUL WEB ↗</div><div class="portfolio-project">02 / LITTLE IDEAS ↗</div><div class="portfolio-project">03 / SIDE PROJECT ↗</div></div></div></div><div class="preview-caption"><span id="previewDetail">把一句想法，变成作品集的第一版。</span><span>YOUR NEXT CREATION ↗</span></div></div>
+      </div><p class="demo-footnote">场景与内容为预设演示，不会发起模型请求。鹊桥提供 API 接入，创作在你选择的客户端或应用中完成。</p></div>
+    </div></section>
 
-          <div class="hero-stats">
-            <div class="stat"><strong>OpenAI 兼容</strong><span>SDK 直接接入</span></div>
-            <div class="stat"><strong>多模型</strong><span>一个 Key 调用</span></div>
-            <div class="stat"><strong>按量计费</strong><span>用多少扣多少</span></div>
-            <div class="stat"><strong>用量日志</strong><span>请求可追溯</span></div>
-          </div>
-        </div>
+    <section class="section benefits" id="features" aria-labelledby="benefitsTitle"><div class="container"><div class="section-heading reveal"><div><div class="eyebrow mono">LESS FRICTION. MORE FLOW.</div><h2 id="benefitsTitle">少一点折腾，多一点心流。</h2></div><span class="section-index mono">BUILT AROUND YOU / 02</span></div><div class="benefit-grid">
+      <article class="benefit-card reveal"><div class="benefit-icon"><svg class="icon" aria-hidden="true"><use href="#i-switch"/></svg></div><h3>换模型，不换习惯。</h3><p>一个接口连接多种模型。继续用熟悉的 SDK 和兼容客户端，把选择权留在自己手里。</p><div class="benefit-art switcher-art mono" aria-hidden="true"><span>GPT</span><span class="selected">✳ Claude</span><span>✦ Gemini</span></div></article>
+      <article class="benefit-card reveal"><div class="benefit-icon"><svg class="icon" aria-hidden="true"><use href="#i-wallet"/></svg></div><h3>节奏和预算，自己定。</h3><p>按实际用量计费，为不同项目设置 Key 限额。随手试个灵感，也能认真管好预算。</p><div class="benefit-art meter-art" aria-hidden="true"><div class="meter-label"><span>我的项目预算</span><b>IN CONTROL</b></div><div class="meter"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="meter-note">API Key 限额 · 功能示意</span></div></article>
+      <article class="benefit-card reveal"><div class="benefit-icon"><svg class="icon" aria-hidden="true"><use href="#i-chart"/></svg></div><h3>每一次用量，心里有数。</h3><p>模型、Token 与费用都有明细。灵感可以自由生长，账单也可以清清楚楚。</p><div class="benefit-art log-art mono" aria-hidden="true"><div class="log-row"><span>MODEL</span><span>TOKENS</span><span>COST</span></div><div class="log-row"><span>GPT</span><span>查看用量</span><span>查看费用</span></div><div class="log-row"><span>Claude</span><span>查看用量</span><span>查看费用</span></div></div></article>
+    </div></div></section>
 
-        <div class="code-card">
-          <div class="code-head">
-            <div class="dots"><i></i><i></i><i></i></div>
-            <span class="code-title">快速开始</span>
-            <button class="copy-btn" id="copyBtn">复制</button>
-          </div>
-          <pre id="codeBlock"><span class="tok-cmd">curl</span> <span data-api-base>https://api.example.com</span>/v1/chat/completions \
-  -H <span class="tok-str">"Authorization: Bearer sk-your-key"</span> \
-  -H <span class="tok-str">"Content-Type: application/json"</span> \
-  -d <span class="tok-str">'{
-    "model": "gpt-5.6",
-    "messages": [{"role": "user", "content": "Hello"}]
-  }'</span></pre>
-        </div>
-      </div>
-    </section>
+    <section class="section models" id="models" aria-labelledby="modelsTitle"><div class="container"><div class="section-heading reveal"><div><div class="eyebrow mono">MEET YOUR AI LINEUP / 模型宇宙</div><h2 id="modelsTitle">不同的拿手好戏，同一个入口。</h2></div><p class="section-description">不用只选一个。<br/>为当下的任务，找到更合拍的 AI。</p></div><div class="models-grid">
+      <article class="model-card reveal"><div class="model-card-head"><span class="model-emblem" aria-hidden="true" style="color:#d6f9a3">◎</span><span class="model-maker mono">OPENAI</span></div><h3>GPT</h3><p>从日常问题，到新的产品原型。</p><div class="model-tags"><span>通用对话</span><span>代码创作</span></div></article>
+      <article class="model-card reveal"><div class="model-card-head"><span class="model-emblem" aria-hidden="true" style="color:#e5b99b">✳</span><span class="model-maker mono">ANTHROPIC</span></div><h3>Claude</h3><p>给长文、代码和复杂想法多一点耐心。</p><div class="model-tags"><span>长文理解</span><span>深度思考</span></div></article>
+      <article class="model-card reveal"><div class="model-card-head"><span class="model-emblem" aria-hidden="true" style="color:#b2a5fa">✦</span><span class="model-maker mono">GOOGLE</span></div><h3>Gemini</h3><p>换个角度，探索更多信息与可能。</p><div class="model-tags"><span>多模态</span><span>信息分析</span></div></article>
+      <article class="model-card reveal"><div class="model-card-head"><span class="model-emblem" aria-hidden="true" style="color:#9cbaef">≈</span><span class="model-maker mono">DEEPSEEK</span></div><h3>DeepSeek</h3><p>中文表达与推理，也有好搭档。</p><div class="model-tags"><span>中文场景</span><span>逻辑推理</span></div></article>
+    </div><div class="models-note"><span>以上为模型家族介绍，具体可用型号、能力与价格以控制台为准。</span><a class="text-link" data-panel-url href="https://api.queqiaohub.com/dashboard" target="_top">去控制台探索 <svg class="icon" aria-hidden="true"><use href="#i-up-right"/></svg></a></div></div></section>
 
-    <!-- Features -->
-    <section id="features">
-      <div class="container">
-        <div class="section-head">
-          <div class="eyebrow">Features</div>
-          <h2>把复杂的模型接入，收进一个接口</h2>
-          <p>不用分别申请各家账号、维护多套 SDK。一个 Base URL，一个 Key，按统一格式调用。</p>
-        </div>
-        <div class="grid-3">
-          <article class="card">
-            <div class="icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
-            </div>
-            <h3>统一接口</h3>
-            <p>兼容 OpenAI Chat Completions / Responses，现有 SDK 和客户端基本不用改代码。</p>
-          </article>
-          <article class="card">
-            <div class="icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
-            </div>
-            <h3>多模型聚合</h3>
-            <p>文本、推理、多模态模型按需切换，模型列表和实时价格以控制台为准。</p>
-          </article>
-          <article class="card">
-            <div class="icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M5 10l7-7 7 7"/></svg>
-            </div>
-            <h3>按量计费</h3>
-            <p>充多少用多少，按 token 或按次计费，不强制包月，适合从测试到生产。</p>
-          </article>
-          <article class="card">
-            <div class="icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M14 3v6h6"/></svg>
-            </div>
-            <h3>用量与日志</h3>
-            <p>每次请求的模型、token、费用都有记录，方便对账和排查问题。</p>
-          </article>
-          <article class="card">
-            <div class="icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg>
-            </div>
-            <h3>并发与限额</h3>
-            <p>支持 API Key 级别的限额、分组倍率和并发控制，方便团队协作与成本管理。</p>
-          </article>
-          <article class="card">
-            <div class="icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6l-8-3Z"/></svg>
-            </div>
-            <h3>稳定接入</h3>
-            <p>多账号/多通道调度，单通道异常时自动切换；具体可用性以实际服务为准。</p>
-          </article>
-        </div>
-      </div>
-    </section>
+    <section class="section" id="connect" aria-labelledby="connectTitle"><div class="container connect-grid"><div class="connect-copy reveal"><div class="eyebrow mono">PLUG IN. FLOW ON. / 轻松接入</div><h2 id="connectTitle">熟悉的工具，<br/>接上新的可能。</h2><p>兼容 OpenAI 接口格式。在支持自定义 API 地址的工具里，填入鹊桥地址和 Key，就能开始探索。</p><ol class="connection-steps"><li><span class="number mono">01</span><div><b>创建账号</b><small>进入控制台，了解模型和价格</small></div></li><li><span class="number mono">02</span><div><b>准备你的 Key</b><small>按需充值，创建 API Key</small></div></li><li><span class="number mono">03</span><div><b>接入常用工具</b><small>填写 API 地址、Key 和可用模型 ID</small></div></li></ol></div><div class="reveal"><div class="code-window"><div class="code-toolbar"><span class="code-toolbar-label"><span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="mono">your-next-idea.sh</span></span><button class="copy-button" type="button" id="copyBtn"><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg><span id="copyLabel" role="status" aria-live="polite">复制示例</span></button></div>
+      <pre tabindex="0" aria-label="cURL 接入示例"><code id="codeBlock"><span class="code-comment"># 用控制台里的 Key 和模型 ID 替换占位符</span>
+<span class="code-command">curl</span> <span class="code-string">"<span data-api-base>https://api.queqiaohub.com</span>/v1/chat/completions"</span> \
+  -H <span class="code-string">"Authorization: Bearer YOUR_API_KEY"</span> \
+  -H <span class="code-string">"Content-Type: application/json"</span> \
+  -d <span class="code-string">'{
+    "model": "YOUR_MODEL_ID",
+    "messages": [{
+      "role": "user",
+      "content": "一起做点有意思的事吧。"
+    }]
+  }'</span></code></pre><div class="code-bottom"><span><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>OpenAI 兼容接口</span><span class="mono">YOUR TOOL. YOUR WORKFLOW.</span></div></div><p class="integrations"><span>接入你喜欢的工具</span><span>OpenAI SDK</span><span>Cherry Studio</span><span>Cline</span></p></div></div></section>
 
-    <!-- Models -->
-    <section id="models">
-      <div class="container">
-        <div class="section-head">
-          <div class="eyebrow">Models</div>
-          <h2>常用模型，一个 Key 覆盖</h2>
-          <p>下面只是示例，实际可用模型和价格请登录控制台查看。</p>
-        </div>
-        <div class="grid-4">
-          <article class="card model-card">
-            <div class="model-top"><span class="model-name">GPT 系列</span><span class="model-tag">OpenAI</span></div>
-            <p class="model-desc">通用对话、推理、代码与多模态任务。</p>
-          </article>
-          <article class="card model-card">
-            <div class="model-top"><span class="model-name">Claude 系列</span><span class="model-tag">Anthropic</span></div>
-            <p class="model-desc">长上下文、代码理解与复杂推理。</p>
-          </article>
-          <article class="card model-card">
-            <div class="model-top"><span class="model-name">Gemini 系列</span><span class="model-tag">Google</span></div>
-            <p class="model-desc">多模态、长文档与高性价比推理。</p>
-          </article>
-          <article class="card model-card">
-            <div class="model-top"><span class="model-name">DeepSeek 系列</span><span class="model-tag">DeepSeek</span></div>
-            <p class="model-desc">高性价比中文与代码场景。</p>
-          </article>
-          <article class="card model-card">
-            <div class="model-top"><span class="model-name">Qwen 系列</span><span class="model-tag">Alibaba</span></div>
-            <p class="model-desc">中文、长文本与工具调用。</p>
-          </article>
-          <article class="card model-card">
-            <div class="model-top"><span class="model-name">Grok 系列</span><span class="model-tag">xAI</span></div>
-            <p class="model-desc">实时信息与通用对话。</p>
-          </article>
-          <article class="card model-card">
-            <div class="model-top"><span class="model-name">更多模型</span><span class="model-tag">持续更新</span></div>
-            <p class="model-desc">以控制台模型列表和实时价格为准。</p>
-          </article>
-          <article class="card model-card">
-            <div class="model-top"><span class="model-name">自定义接入</span><span class="model-tag">OpenAI 兼容</span></div>
-            <p class="model-desc">任何兼容 OpenAI 协议的客户端都可接入。</p>
-          </article>
-        </div>
-        <p class="models-note">模型名称、上下文长度、价格和可用性可能随上游调整，请以控制台展示为准。</p>
-      </div>
-    </section>
+    <section class="section pricing" id="pricing" aria-labelledby="pricingTitle"><div class="container"><div class="pricing-panel reveal"><div><div class="eyebrow mono">YOUR PACE. YOUR BUDGET.</div><h2 id="pricingTitle">为真正用到的能力买单。<br/><span>给想法，一个轻盈的开始。</span></h2><p>从一个小项目开始，按实际用量使用模型。<br/>先了解价格，再决定你的第一步。</p><a class="text-link" data-panel-url href="https://api.queqiaohub.com/dashboard" target="_top">了解模型与计费 <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></div><div class="pricing-principles"><div class="pricing-principle"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><div><h3>按用量计费</h3><p>根据模型和实际消耗扣费，输入、输出分别计价。</p></div></div><div class="pricing-principle"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><div><h3>模型自由选择</h3><p>按任务选择合适的模型，用同一个账户管理用量。</p></div></div><div class="pricing-principle"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><div><h3>明细随时可查</h3><p>实时单价、计费规则与充值金额，均可在控制台确认。</p></div></div></div></div></div></section>
 
-    <!-- Pricing -->
-    <section id="pricing">
-      <div class="container">
-        <div class="section-head">
-          <div class="eyebrow">Pricing</div>
-          <h2>按量计费，不强制包月</h2>
-          <p>具体单价按模型和输入/输出 token 计算，登录控制台可查看实时价格。</p>
-        </div>
-        <div class="pricing-grid">
-          <article class="card price-card">
-            <div class="price-label">体验</div>
-            <div class="price-main">¥10 <small>起充</small></div>
-            <ul class="price-list">
-              <li>注册即用</li>
-              <li>创建 API Key</li>
-              <li>按量扣费</li>
-              <li>用量日志</li>
-            </ul>
-            <a class="btn btn-ghost" data-register-url href="#">开始使用</a>
-          </article>
-          <article class="card price-card featured">
-            <div class="price-label">标准</div>
-            <div class="price-main">按量 <small>计费</small></div>
-            <ul class="price-list">
-              <li>输入/输出分别计价</li>
-              <li>多模型自由切换</li>
-              <li>API Key 限额</li>
-              <li>适合个人与小团队</li>
-            </ul>
-            <a class="btn btn-primary" data-register-url href="#">免费注册</a>
-          </article>
-          <article class="card price-card">
-            <div class="price-label">团队 / 私有</div>
-            <div class="price-main">联系 <small>客服</small></div>
-            <ul class="price-list">
-              <li>更高并发</li>
-              <li>独立分组与倍率</li>
-              <li>用量对账</li>
-              <li>定制接入方案</li>
-            </ul>
-            <a class="btn btn-ghost" data-contact-url href="#">联系我们</a>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- How -->
-    <section id="how">
-      <div class="container">
-        <div class="section-head">
-          <div class="eyebrow">Get started</div>
-          <h2>四步接入</h2>
-          <p>整个过程不需要改业务代码，替换 Base URL 和 Key 即可。</p>
-        </div>
-        <div class="steps">
-          <div class="step"><h3>注册账号</h3><p>打开控制台注册并登录。</p></div>
-          <div class="step"><h3>充值余额</h3><p>选择金额充值，按量扣费。</p></div>
-          <div class="step"><h3>创建 API Key</h3><p>在控制台生成并保存 Key。</p></div>
-          <div class="step"><h3>替换 Base URL</h3><p>把客户端地址指向本站即可调用。</p></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FAQ -->
-    <section id="faq">
-      <div class="container">
-        <div class="section-head">
-          <div class="eyebrow">FAQ</div>
-          <h2>常见问题</h2>
-          <p>更多问题可以联系客服：QQ 2933225671　邮箱 2933225671@qq.com</p>
-        </div>
-        <div class="faq">
-          <details>
-            <summary>兼容 OpenAI SDK 吗？</summary>
-            <p>兼容。把 Base URL 换成本站地址、API Key 换成控制台生成的 Key，原有 OpenAI SDK 和大部分客户端可以直接使用。</p>
-          </details>
-          <details>
-            <summary>怎么计费？</summary>
-            <p>按模型和 token 用量计费，输入和输出价格可能不同。具体单价、倍率和最低充值金额以控制台为准。</p>
-          </details>
-          <details>
-            <summary>支持哪些模型？</summary>
-            <p>控制台会展示当前可用模型和实时价格。模型可用性会随上游调整，建议以控制台列表为准。</p>
-          </details>
-          <details>
-            <summary>可以开票吗？</summary>
-            <p>是否支持开票、开票类型和最低金额，以实际运营方说明为准，请联系客服确认。</p>
-          </details>
-          <details>
-            <summary>余额可以退吗？</summary>
-            <p>退款政策以运营方规则为准。建议先小额测试，确认模型和价格后再充值更大金额。</p>
-          </details>
-          <details>
-            <summary>请求失败会扣费吗？</summary>
-            <p>一般按实际产生的 token 计费，失败请求的处理以账单和用量日志为准。可以在控制台查看每次请求的明细。</p>
-          </details>
-        </div>
-      </div>
-    </section>
-
-    <!-- Final CTA -->
-    <section>
-      <div class="container">
-        <div class="final-cta">
-          <h2>现在注册，拿一个 Key 开始</h2>
-          <p>先小额测试，确认模型、速度和价格合适，再逐步放量。</p>
-          <div class="hero-cta" style="justify-content:center">
-            <a class="btn btn-primary btn-lg" data-register-url href="#">免费注册</a>
-            <a class="btn btn-ghost btn-lg" data-panel-url href="#">进入控制台</a>
-          </div>
-        </div>
-      </div>
-    </section>
+    <section class="section faq" id="faq" aria-labelledby="faqTitle"><div class="container faq-layout"><div class="faq-intro reveal"><div class="eyebrow mono">A FEW THINGS TO KNOW.</div><h2 id="faqTitle">开始之前，<br/>你可能还想知道。</h2><p>有具体的接入问题？我们一起看看。</p><a class="text-link" data-contact-url href="https://wpa.qq.com/msgrd?v=3&uin=2933225671&site=qq&menu=yes" target="_blank" rel="noopener noreferrer">聊聊你的问题 <svg class="icon" aria-hidden="true"><use href="#i-up-right"/></svg></a></div><div class="reveal">
+      <details><summary>鹊桥是聊天软件，还是 API 服务？</summary><p>鹊桥提供 AI 模型 API 接入与用量管理。你可以把 API Key 配置到支持自定义接口的客户端、开发工具或自己的应用里使用。页面中的灵感实验室是场景演示。</p></details>
+      <details><summary>第一次使用，需要写代码吗？</summary><p>如果你使用支持自定义 API 地址的客户端，通常只需填写 API 地址、Key 和模型 ID。开发者也可以通过兼容 OpenAI 格式的 SDK 或 HTTP 请求接入。不同工具的设置方法以对应工具说明为准。</p></details>
+      <details><summary>支持哪些模型？怎么查看价格？</summary><p>登录控制台查看当前可用的模型和计费规则。具体型号、分组与输入、输出单价以控制台为准，可以先确认适合自己的模型，再按需充值。</p></details>
+      <details><summary>怎么知道一次请求花了多少钱？</summary><p>控制台的用量日志会记录请求使用的模型、Token 和费用明细。不同模型的计费规则可能不同，充值前可以先查看单价与分组倍率。</p></details>
+      <details><summary>遇到接入问题，如何联系？</summary><p>可以联系 QQ：2933225671，或加入 QQ 群：1126097928。提供使用的工具、模型 ID 和错误信息，会更方便定位问题。请保管好 API Key，不要在公开消息中发送完整密钥。</p></details>
+    </div></div></section>
+    <section class="closing" aria-labelledby="closingTitle"><div class="container"><div class="eyebrow mono">THE NEXT THING IS YOURS TO MAKE.</div><h2 id="closingTitle">下一件有意思的事，<span>由你开始。</span></h2><p>一个小工具，一篇好内容，一个终于动手的想法。<br/>鹊桥在这里，连接你的下一种可能。</p><a class="btn btn-primary" data-register-url href="https://api.queqiaohub.com/register" target="_top">把我的想法接通 <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a><p class="closing-note">创建账号，探索适合你的模型。</p></div></section>
   </main>
-
-  <footer>
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <a class="brand" href="#top">
-            <span class="brand-mark">鹊</span>
-            <span data-site-name>鹊桥</span>
-          </a>
-          <p>一个 API Key，接入主流大模型。OpenAI 兼容，按量计费。</p>
-          <p>客服 QQ：2933225671　邮箱：<a href="mailto:2933225671@qq.com">2933225671@qq.com</a></p>
-        </div>
-        <div class="footer-links">
-          <a href="#features">功能</a>
-          <a href="#models">模型</a>
-          <a href="#pricing">价格</a>
-          <a href="#faq">常见问题</a>
-          <a data-panel-url href="#">控制台</a>
-          <a data-contact-url href="#">联系客服</a>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <span>© <span id="year"></span> <span data-site-name>鹊桥</span></span>
-        <span data-icp>ICP备00000000号</span>
-      </div>
-    </div>
-  </footer>
+  <footer><div class="container"><div class="footer-main"><div class="footer-brand"><a class="brand" href="#top"><svg class="brand-icon" aria-hidden="true"><use href="#i-bridge"/></svg><span data-site-name>鹊桥</span></a><p>连接智能，也连接你的好想法。</p></div><nav class="footer-links" aria-label="页脚导航"><a href="#models">模型宇宙</a><a href="#connect">接入指南</a><a href="#faq">常见问题</a><a data-panel-url href="https://api.queqiaohub.com/dashboard" target="_top">控制台 ↗</a></nav></div><div class="footer-bottom"><span>© <span id="year">2026</span> <span data-site-name>鹊桥</span>　<span class="mono">MADE FOR WHAT'S NEXT.</span></span><span>QQ 2933225671　·　QQ 群 1126097928</span><a data-icp href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" hidden></a></div></div></footer>
 
   <script>
-    /*
-     * ============================================================
-     * 只需要改下面这一块
-     * ============================================================
-     */
+    // 配置区：服务链接保持集中；静态页面不收集密钥、不发起模型调用。
     const SITE_CONFIG = {
-      name: "鹊桥",                                  // 品牌名
-      panelUrl: "https://api.queqiaohub.com/dashboard", // 控制台地址
-      registerUrl: "https://api.queqiaohub.com/register", // 注册地址
-      apiBase: "https://api.queqiaohub.com",        // API Base URL
-      contactUrl: "https://wpa.qq.com/msgrd?v=3&uin=2933225671&site=qq&menu=yes", // 客服 QQ
-      icp: ""                                       // 备案号，没有就留空
+      name: "鹊桥",
+      panelUrl: "https://api.queqiaohub.com/dashboard",
+      registerUrl: "https://api.queqiaohub.com/register",
+      apiBase: "https://api.queqiaohub.com",
+      contactUrl: "https://wpa.qq.com/msgrd?v=3&uin=2933225671&site=qq&menu=yes",
+      icp: ""
     };
-    /* ============================================================ */
-
-    // 填充配置
-    document.querySelectorAll("[data-site-name]").forEach((el) => {
-      el.textContent = SITE_CONFIG.name;
+    document.querySelectorAll("[data-site-name]").forEach(el => { el.textContent = SITE_CONFIG.name; });
+    document.title = `${SITE_CONFIG.name} — 让好想法，即刻发生。`;
+    document.querySelectorAll("[data-panel-url], [data-register-url], [data-contact-url]").forEach(el => {
+      const contact = el.hasAttribute("data-contact-url");
+      el.href = SITE_CONFIG[contact ? "contactUrl" : el.hasAttribute("data-panel-url") ? "panelUrl" : "registerUrl"];
+      el.target = contact ? "_blank" : "_top";
+      if (contact) el.rel = "noopener noreferrer";
     });
-    document.querySelectorAll("[data-panel-url]").forEach((el) => {
-      el.href = SITE_CONFIG.panelUrl;
-      // 被后台首页 iframe 嵌入时，跳出 iframe，避免套娃
-      el.target = "_top";
-    });
-    document.querySelectorAll("[data-register-url]").forEach((el) => {
-      el.href = SITE_CONFIG.registerUrl;
-      el.target = "_top";
-    });
-    document.querySelectorAll("[data-api-base]").forEach((el) => {
-      el.textContent = SITE_CONFIG.apiBase;
-    });
-    document.querySelectorAll("[data-contact-url]").forEach((el) => {
-      el.href = SITE_CONFIG.contactUrl;
-      el.target = "_blank";
-    });
-    document.querySelectorAll("[data-icp]").forEach((el) => {
-      el.textContent = SITE_CONFIG.icp;
-      if (!SITE_CONFIG.icp.trim()) el.style.display = "none";
-    });
+    document.querySelectorAll("[data-api-base]").forEach(el => { el.textContent = SITE_CONFIG.apiBase.replace(/\/+$/, ""); });
+    document.querySelectorAll("[data-icp]").forEach(el => { el.textContent = SITE_CONFIG.icp; el.hidden = !SITE_CONFIG.icp.trim(); });
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // 移动端菜单
-    const nav = document.getElementById("nav");
-    const menuToggle = document.getElementById("menuToggle");
-    if (menuToggle) {
-      menuToggle.addEventListener("click", () => nav.classList.toggle("open"));
-      nav.querySelectorAll(".nav-links a").forEach((a) => {
-        a.addEventListener("click", () => nav.classList.remove("open"));
-      });
-    }
+    const menuToggle = document.getElementById("menuToggle"), navLinks = document.getElementById("navLinks");
+    function closeMenu() { navLinks.classList.remove("open"); menuToggle.setAttribute("aria-expanded", "false"); menuToggle.setAttribute("aria-label", "打开导航菜单"); }
+    menuToggle.addEventListener("click", () => { const open = navLinks.classList.toggle("open"); menuToggle.setAttribute("aria-expanded", String(open)); menuToggle.setAttribute("aria-label", open ? "关闭导航菜单" : "打开导航菜单"); });
+    navLinks.querySelectorAll("a").forEach(a => a.addEventListener("click", closeMenu));
+    document.addEventListener("keydown", event => { if (event.key === "Escape" && navLinks.classList.contains("open")) { closeMenu(); menuToggle.focus(); } });
+    document.addEventListener("click", event => { if (!event.target.closest(".nav")) closeMenu(); });
+    window.matchMedia("(max-width:600px)").addEventListener("change", closeMenu);
 
-    // 复制示例命令
-    const copyBtn = document.getElementById("copyBtn");
-    const codeBlock = document.getElementById("codeBlock");
-    if (copyBtn && codeBlock) {
-      copyBtn.addEventListener("click", async () => {
-        try {
-          await navigator.clipboard.writeText(codeBlock.innerText);
-          copyBtn.textContent = "已复制";
-          setTimeout(() => (copyBtn.textContent = "复制"), 1500);
-        } catch {
-          copyBtn.textContent = "复制失败";
-          setTimeout(() => (copyBtn.textContent = "复制"), 1500);
-        }
+    // 人工编写的场景示例，不代表实时模型输出。
+    const portfolioPreview = document.getElementById("previewBody").innerHTML;
+    const scenes = {
+      code: { tag:"FROM IDEA TO YOUR FIRST SHIP", title:"那个一直想做的小项目，<br/>今天就开个头。", description:"个人网站、周末小工具，或是一个大胆的产品原型。把想法交给 AI，在你熟悉的编辑器里，一起把第一版做出来。", examples:[
+        { prompt:"做一个个人作品集", filename:"my-first-portfolio / preview", detail:"把一句想法，变成作品集的第一版。", html:portfolioPreview },
+        { prompt:"做一个专注计时器", filename:"a-little-focus / preview", detail:"从一个小需求开始，做一个自己会用的工具。", html:'<div class="portfolio focus-preview"><div class="portfolio-nav mono"><b>A LITTLE FOCUS.</b><span>YOUR OWN PACE ↗</span></div><div class="focus-kicker">ONE THING AT A TIME</div><div class="focus-time mono">25:00</div><div class="focus-pill">专注时刻 · 界面预览</div><p class="focus-note">把世界调成静音，留一点时间给自己。</p></div>' }
+      ]},
+      write: { tag:"FIND THE WORDS. KEEP YOUR VOICE.", title:"想表达的，<br/>不再卡在第一句话。", description:"给文章找个好开头，给视频整理一份脚本，或把零散的想法串成一个故事。让 AI 帮你推敲，保留属于你的表达。", examples:[
+        { prompt:"写一篇城市漫游开场", filename:"weekend-stories / draft", detail:"给零散的灵感，一个可以继续写下去的开头。", html:'<div class="writing-preview"><div class="writing-kicker mono">WEEKEND NOTES / 001</div><h4>今天没有目的地，<br/>只有想拐进去的街。</h4><p>把地图收进口袋，沿着咖啡香走。<br/>有时候，重新喜欢上一座城市，<br/>只需要一个不赶时间的下午。</p><div class="writing-outline"><span>01 巷子里的风</span><span>02 一杯慢咖啡</span><span>03 日落之前</span></div></div>' },
+        { prompt:"策划一期播客", filename:"small-talks / outline", detail:"从一个话题，延伸出一期节目的结构。", html:'<div class="writing-preview"><div class="writing-kicker mono">SMALL TALKS / EPISODE 01</div><h4>下班以后，<br/>我们还可以成为谁？</h4><p>聊聊那些没有写进简历的爱好，<br/>那些「没什么用」，却让生活有光的小事。<br/>从一个问题开始，留出认真聊天的空间。</p><div class="writing-outline"><span>开场：最近的快乐</span><span>对谈：另一种自己</span><span>结尾：给听众的信</span></div></div>' }
+      ]},
+      learn: { tag:"STAY CURIOUS. GO A LITTLE DEEPER.", title:"好奇心再远，<br/>也能找到下一条线索。", description:"拆解一个新概念，梳理长文的逻辑，或为研究整理思路。用 AI 建立理解，再回到原始资料中求证，让知识真正变成自己的。", examples:[
+        { prompt:"帮我理解机器学习", filename:"curiosity-map / machine-learning", detail:"先建立知识地图，再深入每一个值得追问的问题。", html:'<div class="research-preview"><small class="mono">CURIOSITY MAP / 001</small><h4>机器学习，从哪里开始？</h4><div class="research-map"><div><b>监督学习</b><p>从标注中学习<br/>分类与回归<br/>预测新的结果</p></div><div><b>无监督学习</b><p>寻找数据结构<br/>聚类与降维<br/>发现潜在规律</p></div><div><b>强化学习</b><p>行动与反馈<br/>奖励和策略<br/>在试错中改进</p></div></div><div class="research-bottom">下一步：选择一个小数据集，试着训练第一个模型。↗</div></div>' },
+        { prompt:"梳理论文阅读框架", filename:"reading-map / research-paper", detail:"用清晰的问题读论文，关键结论仍需核对原文。", html:'<div class="research-preview"><small class="mono">READING MAP / 002</small><h4>读懂一篇论文的三条线索。</h4><div class="research-map"><div><b>问题是什么</b><p>研究的动机<br/>现有的局限<br/>核心假设</p></div><div><b>如何求证</b><p>方法与数据<br/>对照和实验<br/>评价指标</p></div><div><b>意味着什么</b><p>主要发现<br/>适用边界<br/>待解的问题</p></div></div><div class="research-bottom">阅读提示：标记原文位置，区分作者结论与自己的推测。↗</div></div>' }
+      ]}
+    };
+    let activeScene = "code";
+    const sceneTabs = [...document.querySelectorAll("[data-scene]")], promptOptions = document.getElementById("promptOptions");
+    function showExample(index) {
+      const example = scenes[activeScene].examples[index];
+      document.getElementById("previewBody").innerHTML = example.html;
+      document.getElementById("previewFilename").textContent = example.filename;
+      document.getElementById("previewDetail").textContent = example.detail;
+      promptOptions.querySelectorAll("button").forEach((button,i) => button.setAttribute("aria-pressed",String(i === index)));
+    }
+    function selectScene(key) {
+      activeScene = key; const scene = scenes[key];
+      sceneTabs.forEach(button => { const selected = button.dataset.scene === key; button.setAttribute("aria-selected",String(selected)); button.tabIndex = selected ? 0 : -1; });
+      document.getElementById("scenarioPanel").setAttribute("aria-labelledby",`tab-${key}`);
+      document.getElementById("sceneTag").textContent = scene.tag;
+      document.getElementById("sceneTitle").innerHTML = scene.title;
+      document.getElementById("sceneDescription").textContent = scene.description;
+      promptOptions.replaceChildren(...scene.examples.map((example,index) => { const button = document.createElement("button"); button.type = "button"; button.className = "prompt-option"; button.textContent = example.prompt; button.dataset.example = index; return button; }));
+      showExample(0);
+    }
+    sceneTabs.forEach((tab,index) => {
+      tab.addEventListener("click",() => selectScene(tab.dataset.scene));
+      tab.addEventListener("keydown",event => {
+        let next;
+        if (event.key === "ArrowRight") next = (index+1)%sceneTabs.length;
+        if (event.key === "ArrowLeft") next = (index+sceneTabs.length-1)%sceneTabs.length;
+        if (event.key === "Home") next = 0;
+        if (event.key === "End") next = sceneTabs.length-1;
+        if (next !== undefined) { event.preventDefault(); selectScene(sceneTabs[next].dataset.scene); sceneTabs[next].focus(); }
       });
+    });
+    promptOptions.addEventListener("click",event => { const button = event.target.closest("[data-example]"); if (button) showExample(Number(button.dataset.example)); });
+
+    let copyTimeout;
+    document.getElementById("copyBtn").addEventListener("click",async () => {
+      const code = document.getElementById("codeBlock"), label = document.getElementById("copyLabel");
+      clearTimeout(copyTimeout);
+      try { await navigator.clipboard.writeText(code.textContent); label.textContent = "已复制"; }
+      catch { const selection = window.getSelection(), range = document.createRange(); range.selectNodeContents(code); if (selection) { selection.removeAllRanges(); selection.addRange(range); } label.textContent = "请手动复制下方代码"; }
+      copyTimeout = setTimeout(() => { label.textContent = "复制示例"; },2800);
+    });
+    if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion:reduce)").matches) {
+      const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add("visible"); observer.unobserve(entry.target); } }),{ threshold:.08 });
+      document.documentElement.classList.add("motion-ready");
+      document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
     }
   </script>
 </body>

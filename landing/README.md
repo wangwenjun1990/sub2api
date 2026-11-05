@@ -1,13 +1,16 @@
-# Sub2API Landing Page
+# 鹊桥 Landing Page
 
-单文件静态落地页，不依赖构建工具，不需要改 sub2api 主程序。
+单文件静态落地页，不依赖构建工具、外部字体、图片或第三方脚本，不需要改 sub2api 主程序。
+
+设计方向：深墨紫背景、浅紫与荧光绿点缀、原创桥形主视觉，用具体创作场景建立兴趣，再解释模型、接入和计费。参考站评估及全部 213 个地址的访问记录见 [DESIGN_REVIEW.md](DESIGN_REVIEW.md)。
 
 ## 文件
 
 ```text
 landing/
 ├── index.html   # 页面本体（HTML + CSS + JS 都在这一个文件里）
-└── README.md
+├── README.md
+└── DESIGN_REVIEW.md  # 设计评估与参考站访问记录
 ```
 
 ## 先改这几处
@@ -16,30 +19,35 @@ landing/
 
 ```js
 const SITE_CONFIG = {
-  name: "Sub2API",
-  panelUrl: "https://console.example.com",
-  registerUrl: "https://console.example.com/register",
-  apiBase: "https://api.example.com",
-  contactUrl: "https://t.me/yourname",
-  icp: "ICP备00000000号"
+  name: "鹊桥",
+  panelUrl: "https://api.queqiaohub.com/dashboard",
+  registerUrl: "https://api.queqiaohub.com/register",
+  apiBase: "https://api.queqiaohub.com",
+  contactUrl: "https://wpa.qq.com/msgrd?v=3&uin=2933225671&site=qq&menu=yes",
+  icp: ""
 };
 ```
 
 | 字段 | 说明 |
 |---|---|
-| `name` | 品牌名，会替换页面上的 Sub2API |
+| `name` | 品牌名，会替换页面标题及标记了 `data-site-name` 的文字；若更换品牌，还需更新静态文案、英文标识和元描述 |
 | `panelUrl` | sub2api 控制台地址 |
 | `registerUrl` | 注册页地址 |
-| `apiBase` | 用户调用 API 的 Base URL |
+| `apiBase` | API 服务根地址，不带 `/v1`；页面自动拼接 `/v1/chat/completions` |
 | `contactUrl` | 客服链接（Telegram / QQ / 微信 / 邮箱） |
 | `icp` | 备案号，没有就留空，会自动隐藏 |
 
 还可以按实际情况修改：
 
 - 模型列表（`#models` 区域）
-- 价格（`#pricing` 区域）
+- 计费说明（`#pricing` 区域）；当前不写未确认的起充金额、优惠和套餐
+- 创作场景：脚本里的 `scenes`；每个场景有两个预设示例，不会调用模型
 - FAQ 文案
-- 主题色：`:root` 里的 `--accent`、`--accent-2`
+- 主题色：`:root` 里的 `--accent`、`--lime`
+
+页面示例不会请求 API，也不要求输入密钥。注册、控制台链接使用 `_top`，支持 iframe 嵌入时跳出到实际服务。
+
+桌面和手机均支持三个场景切换、复制接入示例、FAQ。导航和场景标签支持键盘操作，动画尊重 `prefers-reduced-motion`。复制权限被拒绝时会选中代码并提示手动复制。禁用 JavaScript 时仍可阅读主体并打开注册、控制台链接。
 
 **不要写你没有的能力**，比如真实可用性、并发数、退款承诺，按实际服务写。
 
@@ -143,4 +151,4 @@ Nginx 需要按路径分流，配置更复杂，不如子域名清晰。
 
 ## 说明
 
-这个页面是原创模板，只参考了同类 AI 中转站落地页的常见结构，没有复制 apikey.fan 的代码、样式或文案。
+这个页面是原创设计，参考站仅用于评估信息结构和设计取舍，没有复制参考站的源码、视觉素材或文案。SVG 主视觉和图标内联在 HTML 中。
