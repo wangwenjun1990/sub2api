@@ -2,6 +2,12 @@ export default {
   dashboard: {
     title: 'Dashboard',
     welcomeMessage: "Welcome back! Here's an overview of your account.",
+    consoleWelcome: {
+      eyebrow: 'YOUR CREATIVE SPACE',
+      title: 'Give great ideas {accent}',
+      accent: 'room to grow.',
+      description: 'From your first API call to your next idea. Your exploration starts here.',
+    },
     balance: 'Balance',
     apiKeys: 'API Keys',
     todayRequests: 'Today Requests',

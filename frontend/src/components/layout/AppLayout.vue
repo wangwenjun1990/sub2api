@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-dark-950">
+  <div class="min-h-screen bg-gray-50 dark:bg-dark-950" :data-console-theme="isAdmin ? undefined : 'queqiao'">
     <!-- Background Decoration -->
     <div class="pointer-events-none fixed inset-0 bg-mesh-gradient"></div>
 
@@ -15,7 +15,7 @@
       <AppHeader />
 
       <!-- Main Content -->
-      <main class="p-4 md:p-6 lg:p-8">
+      <main class="console-main p-4 md:p-6 lg:p-8">
         <slot />
       </main>
     </div>
@@ -24,6 +24,7 @@
 
 <script setup lang="ts">
 import '@/styles/onboarding.css'
+import '@/styles/queqiao-console.css'
 import { computed, onMounted } from 'vue'
 import { useAppStore } from '@/stores'
 import { useAuthStore } from '@/stores/auth'

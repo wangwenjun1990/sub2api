@@ -1,0 +1,313 @@
+/*
+ * 鹊桥用户控制台主题。唯一开关：AppLayout 的 data-console-theme="queqiao"。
+ * 不修改 Tailwind 全局调色板，不影响管理员、登录页和首页。
+ * :has 将变量及浮层样式延伸到 Teleport；旧浏览器整套回退到基础样式。
+ * 删除 AppLayout 的主题导入与属性即可撤回换肤。
+ */
+@supports selector(:has(*)) {
+html:root:has([data-console-theme="queqiao"]) {
+  --qq-bg: #f6f4fa;
+  --qq-panel: #ffffff;
+  --qq-panel-soft: #f3f0f8;
+  --qq-panel-hover: #ede8f6;
+  --qq-sidebar: #fbfaff;
+  --qq-ink: #252031;
+  --qq-muted: #71667e;
+  --qq-subtle: #74667f;
+  --qq-success: #197344;
+  --qq-line: #e8e2ef;
+  --qq-accent: #7350b6;
+  --qq-accent-ink: #ffffff;
+  --qq-accent-soft: #eee7fa;
+  --qq-lime: #a4c772;
+  --qq-art-bright: #c7adff;
+  --qq-art-dim: #8c6cb2;
+  --qq-art-line: #e9d9ff;
+  --qq-shadow: 0 3px 16px #38224e04, 0 1px 3px #38224e03;
+  background: var(--qq-bg);
+  scrollbar-color: #998aa9 transparent;
+}
+
+html.dark:has([data-console-theme="queqiao"]) {
+  --qq-bg: #100e17;
+  --qq-panel: #1b1724;
+  --qq-panel-soft: #211c2c;
+  --qq-panel-hover: #2a2337;
+  --qq-sidebar: #15111d;
+  --qq-ink: #f2edf8;
+  --qq-muted: #b0a4c0;
+  --qq-subtle: #a195b1;
+  --qq-success: #66dda2;
+  --qq-line: #322a40;
+  --qq-accent: #c7adff;
+  --qq-accent-ink: #21142f;
+  --qq-accent-soft: #30243f;
+  --qq-lime: #d6f9a3;
+  --qq-art-bright: #d7bdff;
+  --qq-art-dim: #6b4e8a;
+  --qq-art-line: #ebd6ff;
+  --qq-shadow: 0 3px 16px #0000000a, inset 0 1px #ffffff03;
+}
+
+html:root:has([data-console-theme="queqiao"]) body,
+[data-console-theme="queqiao"] {
+  background: var(--qq-bg);
+  color: var(--qq-ink);
+}
+
+[data-console-theme="queqiao"] {
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+[data-console-theme="queqiao"] > .bg-mesh-gradient {
+  background-image: radial-gradient(ellipse at 83% 0%, #b58ade0a, transparent 48%);
+}
+
+[data-console-theme="queqiao"] .console-main {
+  max-width: 1640px;
+  margin-inline: auto;
+}
+
+/* Neutral utilities are scoped to the active user layout, including teleported menus. */
+/* White circular indicators and switch thumbs retain their original contrast. */
+html:root:has([data-console-theme="queqiao"]) :is(.bg-white:not(.rounded-full), .dark\:bg-dark-800, .dark\:bg-dark-900) {
+  background-color: var(--qq-panel);
+}
+html:root:has([data-console-theme="queqiao"]) :is(.bg-gray-50, .bg-gray-100, .dark\:bg-dark-800\/50, .dark\:bg-dark-700\/30) {
+  background-color: var(--qq-panel-soft);
+}
+html:root:has([data-console-theme="queqiao"]) :is(.text-gray-900, .text-gray-800, .text-gray-700, .dark\:text-white, .dark\:text-gray-100, .dark\:text-gray-200) {
+  color: var(--qq-ink);
+}
+html:root:has([data-console-theme="queqiao"]) :is(.text-gray-600, .text-gray-500, .text-gray-400, .dark\:text-gray-300, .dark\:text-gray-400, .dark\:text-dark-300, .dark\:text-dark-400) {
+  color: var(--qq-muted);
+}
+html:root:has([data-console-theme="queqiao"]) :is(.text-gray-400.dark\:text-gray-500, .dark\:text-dark-500) {
+  color: var(--qq-subtle);
+}
+html:root:has([data-console-theme="queqiao"]) :is(.border-gray-100, .border-gray-200, .dark\:border-dark-600, .dark\:border-dark-700, .dark\:border-dark-800, .dark\:border-dark-700\/50) {
+  border-color: var(--qq-line);
+}
+html:root:has([data-console-theme="queqiao"]) :is(.bg-primary-50, .bg-primary-100, .dark\:bg-primary-900\/20, .dark\:bg-primary-900\/30) {
+  background-color: var(--qq-accent-soft);
+}
+html:root:has([data-console-theme="queqiao"]) :is(.text-primary-500, .text-primary-600, .text-primary-700, .dark\:text-primary-300, .dark\:text-primary-400) {
+  color: var(--qq-accent);
+}
+html:root:has([data-console-theme="queqiao"]) :is(.text-green-600, .text-emerald-600, .dark\:text-green-400, .dark\:text-emerald-400, .badge-success) { color: var(--qq-success); }
+html:root:has([data-console-theme="queqiao"]) [data-console-theme="queqiao"] { background-color: var(--qq-bg); }
+
+/* Keep radio-card selection visible above the neutral utility overrides. */
+html:root:has([data-console-theme="queqiao"]) .peer:checked ~ .peer-checked\:border-primary-500 {
+  border-color: var(--qq-accent);
+}
+html:root:has([data-console-theme="queqiao"]) .peer:checked ~ .peer-checked\:bg-primary-50\/60 {
+  background-color: var(--qq-accent-soft);
+}
+html:root:has([data-console-theme="queqiao"]) .peer:checked ~ .peer-checked\:ring-primary-500 {
+  --tw-ring-color: var(--qq-accent);
+}
+
+/* Keep original sidebar widths, collapse behavior and mobile transform intact. */
+html:root:has([data-console-theme="queqiao"]) .sidebar {
+  background: var(--qq-sidebar);
+  border-right: 1px solid var(--qq-line);
+  box-shadow: none;
+}
+html:root:has([data-console-theme="queqiao"]) .sidebar-header {
+  border-bottom: 1px solid var(--qq-line);
+}
+html:root:has([data-console-theme="queqiao"]) .sidebar-logo {
+  background: var(--qq-accent-soft);
+  box-shadow: none;
+  border: 1px solid var(--qq-line);
+}
+html:root:has([data-console-theme="queqiao"]) .sidebar-brand-title {
+  letter-spacing: -.04em;
+  font-size: 21px;
+}
+html:root:has([data-console-theme="queqiao"]) .sidebar-nav { padding-top: 23px; }
+html:root:has([data-console-theme="queqiao"]) .sidebar-link {
+  min-height: 43px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  color: var(--qq-muted);
+  font-size: 13px;
+  font-weight: 500;
+  transition: background-color .18s, color .18s, border-color .18s;
+}
+html:root:has([data-console-theme="queqiao"]) .sidebar-link:hover {
+  background: var(--qq-panel-soft);
+  color: var(--qq-ink);
+}
+html:root:has([data-console-theme="queqiao"]) .sidebar-link-active,
+html:root:has([data-console-theme="queqiao"]) .sidebar-link-active:hover {
+  background: var(--qq-accent-soft);
+  border-color: color-mix(in srgb, var(--qq-accent) 18%, transparent);
+  color: var(--qq-accent);
+  box-shadow: none;
+}
+html:root:has([data-console-theme="queqiao"]) .sidebar-section-title { color: var(--qq-subtle); }
+html:root:has([data-console-theme="queqiao"]) .sidebar-section-title::after { background: var(--qq-line); }
+html:root:has([data-console-theme="queqiao"]) header.glass {
+  background: color-mix(in srgb, var(--qq-bg) 91%, transparent);
+  border-color: var(--qq-line);
+  box-shadow: none;
+  backdrop-filter: blur(16px);
+}
+html:root:has([data-console-theme="queqiao"]) header.glass h1 {
+  font-size: 15px;
+  letter-spacing: -.02em;
+}
+/* Header height and main padding stay original: TablePageLayout relies on them. */
+
+/* Shared controls. Error/success/warning colors and provider payment colors stay semantic. */
+html:root:has([data-console-theme="queqiao"]) :is(.card, .glass-card, .card-glass) {
+  background: var(--qq-panel);
+  border: 1px solid var(--qq-line);
+  border-radius: 18px;
+  box-shadow: var(--qq-shadow);
+  backdrop-filter: none;
+}
+html:root:has([data-console-theme="queqiao"]) .card-hover:hover {
+  border-color: color-mix(in srgb, var(--qq-accent) 40%, var(--qq-line));
+  box-shadow: 0 8px 24px #140b220d;
+}
+html:root:has([data-console-theme="queqiao"]) .btn { border-radius: 10px; font-size: 13px; }
+html:root:has([data-console-theme="queqiao"]) .btn-primary {
+  background: var(--qq-accent);
+  color: var(--qq-accent-ink);
+  box-shadow: 0 3px 12px #9770c21a;
+}
+html:root:has([data-console-theme="queqiao"]) .btn-primary:hover { filter: brightness(1.06); }
+html:root:has([data-console-theme="queqiao"]) .btn-secondary {
+  background: var(--qq-panel-soft);
+  color: var(--qq-ink);
+  border-color: var(--qq-line);
+  box-shadow: none;
+}
+html:root:has([data-console-theme="queqiao"]) :is(.btn-secondary, .btn-ghost, .dropdown-item):hover {
+  background: var(--qq-panel-hover);
+}
+html:root:has([data-console-theme="queqiao"]) :is(.input, .select-trigger, .date-picker-trigger, .date-picker-input) {
+  background: var(--qq-panel-soft);
+  color: var(--qq-ink);
+  border-color: var(--qq-line);
+  border-radius: 10px;
+  box-shadow: none;
+}
+html:root:has([data-console-theme="queqiao"]) .input::placeholder { color: var(--qq-subtle); }
+html:root:has([data-console-theme="queqiao"]) :is(.input-error, .select-trigger-error) { border-color: #ef4444; }
+html:root:has([data-console-theme="queqiao"]) :is(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--qq-accent);
+  outline-offset: 3px;
+}
+html:root:has([data-console-theme="queqiao"]) :is(.dropdown, .modal-content, .select-dropdown-portal, .date-picker-dropdown) {
+  background: var(--qq-panel);
+  color: var(--qq-ink);
+  border-color: var(--qq-line);
+  box-shadow: 0 16px 50px #0b071330;
+}
+html:root:has([data-console-theme="queqiao"]) .select-dropdown-portal .select-option { color: var(--qq-ink); }
+html:root:has([data-console-theme="queqiao"]) .select-dropdown-portal :is(.select-option:hover, .select-option-focused) { background: var(--qq-panel-hover); }
+html:root:has([data-console-theme="queqiao"]) :is(.date-picker-preset-active, .select-option-selected) {
+  background: var(--qq-accent-soft);
+  color: var(--qq-accent);
+}
+html:root:has([data-console-theme="queqiao"]) .select-dropdown-portal .select-option-selected { background: var(--qq-accent-soft); color: var(--qq-accent); }
+html:root:has([data-console-theme="queqiao"]) .date-picker-preset { color: var(--qq-muted); }
+html:root:has([data-console-theme="queqiao"]) .date-picker-preset:hover { background: var(--qq-panel-hover); color: var(--qq-ink); }
+html:root:has([data-console-theme="queqiao"]) .date-picker-preset-active { color: var(--qq-accent); }
+html:root:has([data-console-theme="queqiao"]) .date-picker-dropdown { min-width: 0; width: min(320px, calc(100vw - 40px)); }
+html:root:has([data-console-theme="queqiao"]) .date-picker-apply {
+  background: var(--qq-accent);
+  color: var(--qq-accent-ink);
+}
+html:root:has([data-console-theme="queqiao"]) .badge-primary {
+  color: var(--qq-accent);
+  background: var(--qq-accent-soft);
+}
+html:root:has([data-console-theme="queqiao"]) .badge-gray {
+  color: var(--qq-muted);
+  background: var(--qq-panel-soft);
+}
+html:root:has([data-console-theme="queqiao"]) .table-container { border-color: var(--qq-line); border-radius: 13px; }
+html:root:has([data-console-theme="queqiao"]) .table th { background: var(--qq-panel-soft); color: var(--qq-muted); border-color: var(--qq-line); }
+html:root:has([data-console-theme="queqiao"]) .table td { color: var(--qq-ink); border-color: var(--qq-line); }
+html:root:has([data-console-theme="queqiao"]) .table tbody tr:hover { background: var(--qq-panel-soft); }
+
+/* Dashboard: new presentation-only welcome + original data components. */
+[data-console-theme="queqiao"] .qq-welcome {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 167px;
+  overflow: hidden;
+  padding: 23px 30px;
+  background: linear-gradient(110deg, var(--qq-panel), var(--qq-accent-soft));
+  border: 1px solid var(--qq-line);
+  border-radius: 20px;
+}
+[data-console-theme="queqiao"] .qq-welcome-copy { position: relative; z-index: 1; }
+[data-console-theme="queqiao"] .qq-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--qq-muted);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .16em;
+}
+[data-console-theme="queqiao"] .qq-eyebrow > span { width: 5px; height: 5px; border-radius: 50%; background: var(--qq-lime); }
+[data-console-theme="queqiao"] .qq-welcome h2 { margin-top: 12px; color: var(--qq-ink); font-size: clamp(22px, 2.3vw, 32px); font-weight: 750; letter-spacing: -.045em; line-height: 1.4; }
+[data-console-theme="queqiao"] .qq-welcome h2 > span { color: var(--qq-accent); }
+[data-console-theme="queqiao"] .qq-welcome-description { margin-top: 9px; color: var(--qq-muted); font-size: 12px; line-height: 1.8; }
+[data-console-theme="queqiao"] .qq-welcome-art { width: 330px; height: 150px; margin-block: -20px; margin-right: -15px; flex-shrink: 0; color: var(--qq-accent); }
+[data-console-theme="queqiao"] .qq-dashboard { min-width: 0; }
+[data-console-theme="queqiao"] .qq-dashboard :is(.grid > *, .card > .flex > *) { min-width: 0; }
+[data-console-theme="queqiao"] .qq-stats-primary > .card { position: relative; min-height: 132px; padding: 23px 20px; }
+[data-console-theme="queqiao"] .qq-stats-primary > .card > .flex { align-items: flex-start; }
+[data-console-theme="queqiao"] .qq-stats-primary > .card > .flex > :first-child { padding: 8px; border-radius: 10px; }
+[data-console-theme="queqiao"] .qq-stats-primary .text-xl { font-size: clamp(22px, 2.3vw, 30px); letter-spacing: -.045em; line-height: 1.5; font-variant-numeric: tabular-nums; }
+[data-console-theme="queqiao"] .qq-stats-primary > .card:first-child { background: linear-gradient(125deg, var(--qq-panel), var(--qq-accent-soft)); }
+[data-console-theme="queqiao"] .qq-stats-secondary > .card { padding: 18px; min-height: 111px; }
+[data-console-theme="queqiao"] .qq-stats-secondary .text-xl { font-size: 22px; font-variant-numeric: tabular-nums; letter-spacing: -.035em; }
+[data-console-theme="queqiao"] .qq-stats-secondary .text-xs { line-height: 1.7; overflow-wrap: anywhere; }
+[data-console-theme="queqiao"] .qq-dashboard-charts > .card { padding: 14px 18px; }
+[data-console-theme="queqiao"] .qq-dashboard-charts > .grid > .card { padding: 22px; }
+[data-console-theme="queqiao"] .qq-dashboard-charts h3 { font-size: 13px; letter-spacing: -.01em; }
+[data-console-theme="queqiao"] .qq-dashboard canvas { max-width: 100%; }
+
+@media (min-width: 1024px) and (max-width: 1350px) {
+  [data-console-theme="queqiao"] .qq-stats-primary > .card { padding: 18px 14px; }
+  [data-console-theme="queqiao"] .qq-stats-primary > .card > .flex { gap: 9px; }
+  [data-console-theme="queqiao"] .qq-dashboard-charts > .grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 767px) {
+  [data-console-theme="queqiao"] .qq-welcome { padding: 24px 22px; min-height: 156px; }
+  [data-console-theme="queqiao"] .qq-welcome-art { position: absolute; right: -104px; width: 260px; opacity: .22; }
+  [data-console-theme="queqiao"] .qq-welcome-description { max-width: 240px; }
+  [data-console-theme="queqiao"] :is(.qq-stats-primary, .qq-stats-secondary) { gap: 12px; }
+  [data-console-theme="queqiao"] .qq-stats-primary > .card { padding: 16px 14px; min-height: 145px; }
+  [data-console-theme="queqiao"] .qq-stats-primary > .card > .flex { flex-direction: column; gap: 8px; }
+  [data-console-theme="queqiao"] .qq-stats-primary .text-xl { font-size: 23px; }
+  [data-console-theme="queqiao"] .qq-stats-secondary > .card { padding: 15px 12px; }
+  [data-console-theme="queqiao"] .qq-stats-secondary > .card > .flex { align-items: flex-start; gap: 8px; }
+  [data-console-theme="queqiao"] .qq-stats-secondary > .card > .flex > :first-child { padding: 6px; }
+  [data-console-theme="queqiao"] .qq-stats-secondary .text-xl { font-size: 20px; }
+  [data-console-theme="queqiao"] .qq-dashboard-charts > .grid > .card { padding: 18px 14px; }
+  [data-console-theme="queqiao"] .qq-dashboard-charts > .card > .flex > .ml-auto { margin-left: 0; }
+  [data-console-theme="queqiao"] .qq-dashboard-charts > .card > .flex > .flex:first-child { flex-wrap: wrap; }
+}
+@media (max-width: 370px) {
+  [data-console-theme="queqiao"] .qq-stats-secondary > .card > .flex { flex-direction: column; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html:root:has([data-console-theme="queqiao"]) *,
+  html:root:has([data-console-theme="queqiao"]) *::before,
+  html:root:has([data-console-theme="queqiao"]) *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
+}

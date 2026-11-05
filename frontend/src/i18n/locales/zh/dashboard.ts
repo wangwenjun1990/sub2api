@@ -2,6 +2,12 @@ export default {
   dashboard: {
     title: '仪表盘',
     welcomeMessage: '欢迎回来！这是您账户的概览。',
+    consoleWelcome: {
+      eyebrow: 'YOUR CREATIVE SPACE',
+      title: '让好想法，{accent}',
+      accent: '继续发生。',
+      description: '从一次调用，到下一次灵感。你的探索，都在这里。',
+    },
     balance: '余额',
     apiKeys: 'API 密钥',
     todayRequests: '今日请求',
