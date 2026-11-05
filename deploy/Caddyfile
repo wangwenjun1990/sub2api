@@ -1,5 +1,5 @@
 # =============================================================================
-# Caddy 配置：落地页（静态）+ sub2api（反向代理）
+# Caddy 配置：落地页（静态）+ sub2api + CLIProxyAPI（反向代理）
 # 部署前把 queqiaohub.com 换成你的域名
 # 说明见 deploy/EDGE_SECURITY.md
 # =============================================================================
@@ -18,6 +18,19 @@
 		# trusted_proxies static 173.245.48.0/20 103.21.244.0/22
 		# trusted_proxies_strict
 		# client_ip_headers CF-Connecting-IP X-Forwarded-For
+	}
+}
+
+# CLIProxyAPI API 入口，与 sub2api 使用独立域名，避免主动探测绕回本站。
+# DNS: upstream.queqiaohub.com Caddy 运行于宿主机。
+# 仅公开模型 API，管理页面和管理接口仍使用原来的管理入口。
+upstream.queqiaohub.com {
+	@modelAPI path /v1 /v1/*
+	handle @modelAPI {
+		reverse_proxy 127.0.0.1:8317
+	}
+	handle {
+		respond 404
 	}
 }
 
