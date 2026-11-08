@@ -1,0 +1,240 @@
+/* Isolated authentication surface; dashboard and landing styles stay separate. */
+.qq-public-shell {
+  --qq-public-bg: #f6f4fa;
+  --qq-public-panel: #ffffff;
+  --qq-public-panel-soft: #f1edf7;
+  --qq-public-ink: #252031;
+  --qq-public-muted: #71667e;
+  --qq-public-subtle: #968ba2;
+  --qq-public-line: #e6dfed;
+  --qq-public-accent: #7350b6;
+  --qq-public-accent-soft: #eee7fa;
+  --qq-public-lime: #a4c772;
+  position: relative;
+  isolation: isolate;
+  color: var(--qq-public-ink);
+  background: var(--qq-public-bg) !important;
+}
+
+html.dark .qq-public-shell {
+  --qq-public-bg: #100e17;
+  --qq-public-panel: #1b1724;
+  --qq-public-panel-soft: #211c2c;
+  --qq-public-ink: #f2edf8;
+  --qq-public-muted: #b0a4c0;
+  --qq-public-subtle: #91849e;
+  --qq-public-line: #322a40;
+  --qq-public-accent: #c7adff;
+  --qq-public-accent-soft: #30243f;
+  --qq-public-lime: #d6f9a3;
+}
+
+.qq-public-backdrop {
+  background:
+    radial-gradient(ellipse at 82% 4%, color-mix(in srgb, var(--qq-public-accent) 15%, transparent), transparent 43%),
+    radial-gradient(ellipse at 8% 100%, color-mix(in srgb, var(--qq-public-lime) 9%, transparent), transparent 42%),
+    var(--qq-public-bg) !important;
+}
+
+.qq-public-grid {
+  opacity: .55;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--qq-public-accent) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--qq-public-accent) 7%, transparent) 1px, transparent 1px) !important;
+  background-size: 64px 64px !important;
+  mask-image: linear-gradient(to bottom, black, transparent 88%);
+}
+
+.qq-auth-shell {
+  min-height: 100svh;
+  padding: clamp(20px, 4vw, 56px) 20px;
+}
+
+.qq-auth-frame {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(380px, 430px);
+  align-items: center;
+  gap: clamp(52px, 8vw, 132px);
+  width: min(1080px, 100%);
+}
+
+.qq-auth-story {
+  position: relative;
+  min-height: 650px;
+  overflow: hidden;
+  padding: 38px;
+  border: 1px solid #654b88;
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 84% 77%, #9a6cd054, transparent 43%),
+    radial-gradient(circle at 8% 8%, #8d69ba40, transparent 44%),
+    linear-gradient(145deg, #282039, #181220 78%);
+  box-shadow: 0 30px 70px #24113624, inset 0 1px #ffffff1a;
+  color: #f4edfb;
+}
+.qq-auth-story::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(#c7adff0a 1px, transparent 1px), linear-gradient(90deg, #c7adff0a 1px, transparent 1px);
+  background-size: 36px 36px;
+  mask-image: linear-gradient(to bottom, black, transparent 82%);
+  pointer-events: none;
+}
+
+.qq-story-kicker {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #c8b7dd;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: .16em;
+}
+
+.qq-story-kicker span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--qq-public-lime);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--qq-public-lime) 13%, transparent);
+}
+
+.qq-story-copy { position: relative; z-index: 1; margin-top: 62px; max-width: 430px; }
+.qq-story-overline {
+  margin: 0 0 18px;
+  color: #d6f9a3;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: .17em;
+}
+.qq-story-copy h2 {
+  margin: 0;
+  color: #f4edfb;
+  max-width: 410px;
+  font-size: clamp(34px, 3.7vw, 52px);
+  font-weight: 760;
+  letter-spacing: -.065em;
+  line-height: 1.08;
+}
+.qq-story-copy h2 em { color: #d4b4ff; font-style: normal; }
+.qq-story-description {
+  max-width: 340px;
+  margin: 18px 0 0;
+  color: #c7b8d6;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.qq-story-art {
+  position: absolute;
+  right: -10px;
+  bottom: 58px;
+  width: min(410px, 86%);
+  color: #c7adff;
+  opacity: .72;
+  transform: rotate(-3deg);
+}
+.qq-story-foot {
+  position: absolute;
+  right: 38px;
+  bottom: 26px;
+  left: 38px;
+  display: flex;
+  justify-content: space-between;
+  color: #ac9bbd;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 9px;
+  letter-spacing: .14em;
+}
+
+.qq-auth-content {
+  max-width: 430px;
+}
+
+.qq-auth-brand {
+  position: relative;
+  margin-bottom: 26px;
+}
+
+.qq-auth-brand::after {
+  content: '';
+  display: block;
+  width: 52px;
+  height: 2px;
+  margin: 18px auto 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--qq-public-lime), transparent);
+}
+
+.qq-auth-logo {
+  border: 1px solid color-mix(in srgb, var(--qq-public-accent) 18%, var(--qq-public-line));
+  border-radius: 18px !important;
+  background: var(--qq-public-panel-soft);
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--qq-public-accent) 15%, transparent) !important;
+}
+
+.qq-auth-brand .text-gradient {
+  background-image: linear-gradient(110deg, var(--qq-public-accent), #a87ee0);
+}
+
+.qq-auth-subtitle {
+  color: var(--qq-public-muted) !important;
+}
+
+.qq-auth-card {
+  position: relative;
+  border: 1px solid var(--qq-public-line) !important;
+  border-radius: 22px !important;
+  background: color-mix(in srgb, var(--qq-public-panel) 92%, transparent) !important;
+  box-shadow: 0 22px 60px color-mix(in srgb, #38224e 11%, transparent) !important;
+  backdrop-filter: blur(18px);
+}
+
+.qq-auth-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 5%, var(--qq-public-accent), var(--qq-public-lime), transparent 95%);
+  opacity: .8;
+}
+
+.qq-auth-card h2 { letter-spacing: -.035em; color: var(--qq-public-ink) !important; }
+.qq-auth-card > .space-y-6 > .text-center p { color: var(--qq-public-muted); }
+.qq-auth-card .input-label { color: var(--qq-public-ink); font-size: 12px; letter-spacing: .01em; }
+.qq-auth-card .input {
+  min-height: 46px;
+  border-color: var(--qq-public-line);
+  border-radius: 12px;
+  background: var(--qq-public-panel-soft);
+  color: var(--qq-public-ink);
+}
+.qq-auth-card .input:focus {
+  border-color: var(--qq-public-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--qq-public-accent) 17%, transparent);
+}
+.qq-auth-card .input.input-error,
+.qq-auth-card .input.input-error:focus { border-color: #ef4444; }
+.qq-auth-card .btn-primary {
+  min-height: 46px;
+  border-radius: 12px;
+  background: var(--qq-public-accent);
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--qq-public-accent) 22%, transparent);
+}
+.qq-auth-card .btn-primary:hover { filter: brightness(1.07); }
+.qq-auth-card .btn-secondary { border-color: var(--qq-public-line); background: var(--qq-public-panel-soft); color: var(--qq-public-ink); }
+.qq-auth-card a { color: var(--qq-public-accent); }
+.qq-auth-footer { color: var(--qq-public-muted) !important; }
+.qq-auth-copyright { color: var(--qq-public-subtle) !important; }
+
+@media (max-width: 767px) {
+  .qq-auth-frame { display: block; width: min(430px, 100%); }
+  .qq-auth-story { display: none; }
+  .qq-auth-card { padding: 24px !important; }
+}
+
+@media (min-width: 768px) and (max-width: 900px) {
+  .qq-auth-frame { grid-template-columns: minmax(0, 1fr) minmax(350px, 430px); gap: 30px; }
+  .qq-story-copy h2 { font-size: 38px; }
+  .qq-story-art { right: -70px; width: 360px; opacity: .34; }
+}
