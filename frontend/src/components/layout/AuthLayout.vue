@@ -13,25 +13,6 @@
     </div>
 
     <div class="qq-auth-frame relative z-10">
-      <aside class="qq-auth-story" aria-hidden="true">
-        <div class="qq-story-kicker"><span></span> QUEQIAO / ACCESS POINT</div>
-        <div class="qq-story-copy">
-          <p class="qq-story-overline">ONE KEY. MANY POSSIBILITIES.</p>
-          <h2>让灵感，<br /><em>接向更远的地方。</em></h2>
-          <p class="qq-story-description">一个 API Key，连接更多模型。让想法从这里出发。</p>
-        </div>
-        <svg class="qq-story-art" viewBox="0 0 360 180" fill="none">
-          <ellipse cx="204" cy="103" rx="137" ry="38" stroke="currentColor" opacity=".28" transform="rotate(-18 204 103)" />
-          <ellipse cx="204" cy="103" rx="155" ry="53" stroke="currentColor" opacity=".14" transform="rotate(-18 204 103)" />
-          <path d="M166 145V88a40 40 0 0 1 80 0v57h-17V88a23 23 0 0 0-46 0v57z" fill="currentColor" opacity=".76" />
-          <path d="m166 145-17-10V78a40 40 0 0 1 61-34l16 10" fill="currentColor" opacity=".32" />
-          <path d="M171 145V88a35 35 0 0 1 70 0v57m-65 0V88a30 30 0 0 1 60 0v57" stroke="currentColor" opacity=".72" />
-          <path d="m269 35 3 10 10 3-10 3-3 10-3-10-10-3 10-3z" fill="var(--qq-public-lime)" />
-          <circle cx="87" cy="128" r="4" fill="var(--qq-public-lime)" />
-        </svg>
-        <div class="qq-story-foot"><span>BRIDGE_001</span><span>IMAGINATION → REALITY</span></div>
-      </aside>
-
       <section class="qq-auth-content">
         <div class="qq-auth-brand text-center">
           <template v-if="settingsLoaded">
