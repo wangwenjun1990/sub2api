@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">鹊桥AI</title>
+  <desc id="desc">A luminous bridge connecting ideas and models.</desc>
+  <defs>
+    <linearGradient id="qq-bg" x1="70" y1="34" x2="448" y2="478" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#312052"/>
+      <stop offset=".55" stop-color="#1d1632"/>
+      <stop offset="1" stop-color="#111021"/>
+    </linearGradient>
+    <linearGradient id="qq-bridge" x1="100" y1="154" x2="418" y2="370" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d5b6ff"/>
+      <stop offset=".48" stop-color="#9c7bea"/>
+      <stop offset="1" stop-color="#83e7d1"/>
+    </linearGradient>
+    <radialGradient id="qq-glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(190 150) rotate(48) scale(290 320)">
+      <stop stop-color="#a884e8" stop-opacity=".32"/>
+      <stop offset="1" stop-color="#a884e8" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="qq-shadow" x="-25%" y="-25%" width="150%" height="165%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="5" stdDeviation="8" flood-color="#090714" flood-opacity=".42"/>
+    </filter>
+  </defs>
+
+  <rect x="16" y="16" width="480" height="480" rx="120" fill="url(#qq-bg)"/>
+  <rect x="16" y="16" width="480" height="480" rx="120" fill="url(#qq-glow)"/>
+  <rect x="16.75" y="16.75" width="478.5" height="478.5" rx="119.25" fill="none" stroke="#d8c7ff" stroke-opacity=".18" stroke-width="1.5"/>
+
+  <g fill="none" stroke="url(#qq-bridge)" stroke-linecap="round" stroke-linejoin="round" filter="url(#qq-shadow)">
+    <path d="M126 363V253C126 159 386 159 386 253V363" stroke-width="25"/>
+    <path d="M104 363H408" stroke-width="25"/>
+    <path d="M146 363V260C146 191 366 191 366 260V363" stroke-width="8" opacity=".72"/>
+  </g>
+
+  <path d="m256 92 8 24 24 8-24 8-8 24-8-24-24-8 24-8z" fill="#d7f7ae"/>
+  <circle cx="104" cy="363" r="7" fill="#d7f7ae"/>
+  <circle cx="408" cy="363" r="7" fill="#d7f7ae"/>
+</svg>
