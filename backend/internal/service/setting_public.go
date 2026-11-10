@@ -218,6 +218,7 @@ func (s *SettingService) GetPublicSettings(ctx context.Context) (*PublicSettings
 		SettingPaymentEnabled,
 		SettingBalancePayDisabled,
 		SettingSubscriptionUSDToCNYRate,
+		SettingBalanceDisplayUSDToCNYRate,
 		SettingKeyOIDCConnectEnabled,
 		SettingKeyOIDCConnectProviderName,
 		SettingKeyGitHubOAuthEnabled,
@@ -300,9 +301,13 @@ func (s *SettingService) GetPublicSettings(ctx context.Context) (*PublicSettings
 	if v, err := strconv.ParseFloat(settings[SettingKeyBalanceLowNotifyThreshold], 64); err == nil && v >= 0 {
 		balanceLowNotifyThreshold = v
 	}
+	balanceDisplayUSDToCNYRate := 0.0
+	if v, err := strconv.ParseFloat(settings[SettingBalanceDisplayUSDToCNYRate], 64); err == nil && !math.IsInf(v, 0) {
+		balanceDisplayUSDToCNYRate = normalizeBalanceDisplayUSDToCNYRate(v)
+	}
 	var paymentSubscriptionUSDToCNYRate float64
 	if v, err := strconv.ParseFloat(settings[SettingSubscriptionUSDToCNYRate], 64); err == nil && v > 0 && !math.IsInf(v, 0) {
-		paymentSubscriptionUSDToCNYRate = v
+		paymentSubscriptionUSDToCNYRate = normalizeSubscriptionUSDToCNYRate(v)
 	}
 
 	return &PublicSettings{
@@ -356,6 +361,7 @@ func (s *SettingService) GetPublicSettings(ctx context.Context) (*PublicSettings
 		PaymentEnabled:                      settings[SettingPaymentEnabled] == "true",
 		PaymentBalanceDisabled:              settings[SettingBalancePayDisabled] == "true",
 		PaymentSubscriptionUSDToCNYRate:     paymentSubscriptionUSDToCNYRate,
+		PaymentBalanceDisplayUSDToCNYRate:   balanceDisplayUSDToCNYRate,
 		OIDCOAuthEnabled:                    oidcEnabled,
 		OIDCOAuthProviderName:               oidcProviderName,
 		GitHubOAuthEnabled:                  gitHubEnabled,
@@ -621,6 +627,7 @@ type PublicSettingsInjectionPayload struct {
 	PaymentEnabled                      bool                     `json:"payment_enabled"`
 	PaymentBalanceDisabled              bool                     `json:"payment_balance_disabled"`
 	PaymentSubscriptionUSDToCNYRate     float64                  `json:"payment_subscription_usd_to_cny_rate"`
+	PaymentBalanceDisplayUSDToCNYRate   float64                  `json:"payment_balance_display_usd_to_cny_rate"`
 	Version                             string                   `json:"version"`
 	// 服务器全局时区（IANA 名称与当前 UTC 偏移），高峰时段等服务端本地时间窗口的展示标注用
 	ServerTimezone              string  `json:"server_timezone"`
@@ -717,6 +724,7 @@ func (s *SettingService) GetPublicSettingsForInjection(ctx context.Context) (any
 		PaymentEnabled:                      settings.PaymentEnabled,
 		PaymentBalanceDisabled:              settings.PaymentBalanceDisabled,
 		PaymentSubscriptionUSDToCNYRate:     settings.PaymentSubscriptionUSDToCNYRate,
+		PaymentBalanceDisplayUSDToCNYRate:   settings.PaymentBalanceDisplayUSDToCNYRate,
 		Version:                             s.version,
 		ServerTimezone:                      timezone.Name(),
 		ServerUTCOffset:                     timezone.UTCOffset(),

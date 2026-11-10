@@ -312,6 +312,22 @@ func TestSettingService_GetPublicSettings_PaymentBalanceDisabledStrictTrue(t *te
 	}
 }
 
+func TestSettingService_GetPublicSettings_ExposesBalanceDisplayRate(t *testing.T) {
+	svc := NewSettingService(&settingPublicRepoStub{values: map[string]string{
+		SettingBalanceDisplayUSDToCNYRate: "7.15",
+	}}, &config.Config{})
+
+	settings, err := svc.GetPublicSettings(context.Background())
+	require.NoError(t, err)
+	require.Equal(t, 7.15, settings.PaymentBalanceDisplayUSDToCNYRate)
+
+	raw, err := svc.GetPublicSettingsForInjection(context.Background())
+	require.NoError(t, err)
+	payload, ok := raw.(*PublicSettingsInjectionPayload)
+	require.True(t, ok)
+	require.Equal(t, 7.15, payload.PaymentBalanceDisplayUSDToCNYRate)
+}
+
 func TestSettingService_GetPublicSettings_MCPEnabledFollowsExplicitPublicURL(t *testing.T) {
 	for _, tc := range []struct {
 		publicURL, frontendURL string

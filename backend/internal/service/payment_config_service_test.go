@@ -551,6 +551,43 @@ func TestUpdatePaymentConfig_PersistsExplicitEmptyAndFalseValues(t *testing.T) {
 	}
 }
 
+func TestUpdatePaymentConfig_BalanceDisplayRateIsIndependent(t *testing.T) {
+	repo := &paymentConfigSettingRepoStub{values: map[string]string{
+		SettingBalanceRechargeMult:      "0.14",
+		SettingSubscriptionUSDToCNYRate: "0",
+	}}
+	svc := &PaymentConfigService{settingRepo: repo}
+	rate := 7.15
+
+	if err := svc.UpdatePaymentConfig(context.Background(), UpdatePaymentConfigRequest{
+		BalanceDisplayUSDToCNYRate: &rate,
+	}); err != nil {
+		t.Fatalf("UpdatePaymentConfig returned error: %v", err)
+	}
+	if got := repo.values[SettingBalanceDisplayUSDToCNYRate]; got != "7.15" {
+		t.Fatalf("display rate = %q, want 7.15", got)
+	}
+	if got := repo.values[SettingBalanceRechargeMult]; got != "0.14" {
+		t.Fatalf("recharge multiplier = %q, want unchanged 0.14", got)
+	}
+	if got := repo.values[SettingSubscriptionUSDToCNYRate]; got != "0" {
+		t.Fatalf("subscription rate = %q, want unchanged 0", got)
+	}
+	if got := svc.parsePaymentConfig(repo.values).BalanceDisplayUSDToCNYRate; got != rate {
+		t.Fatalf("parsed display rate = %v, want %v", got, rate)
+	}
+}
+
+func TestUpdatePaymentConfig_RejectsNegativeBalanceDisplayRate(t *testing.T) {
+	rate := -1.0
+	err := (&PaymentConfigService{settingRepo: &paymentConfigSettingRepoStub{}}).UpdatePaymentConfig(
+		context.Background(), UpdatePaymentConfigRequest{BalanceDisplayUSDToCNYRate: &rate},
+	)
+	if err == nil {
+		t.Fatal("expected negative balance display rate to be rejected")
+	}
+}
+
 func paymentConfigStrPtr(value string) *string {
 	return &value
 }

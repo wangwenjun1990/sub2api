@@ -374,6 +374,7 @@ export const useAppStore = defineStore('app', () => {
         subscription_enabled: true,
         payment_balance_disabled: false,
         payment_subscription_usd_to_cny_rate: 0,
+        payment_balance_display_usd_to_cny_rate: 0,
         model_plaza_enabled: false,
         model_plaza_require_auth: false,
         plugin_management_enabled: false,

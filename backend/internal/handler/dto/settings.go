@@ -268,17 +268,18 @@ type SystemSettings struct {
 	OpenAIAdvancedSchedulerEffectiveWeightSessionSticky    string   `json:"openai_advanced_scheduler_effective_weight_session_sticky"`
 
 	// Payment configuration
-	PaymentEnabled                   bool     `json:"payment_enabled"`
-	PaymentMinAmount                 float64  `json:"payment_min_amount"`
-	PaymentMaxAmount                 float64  `json:"payment_max_amount"`
-	PaymentDailyLimit                float64  `json:"payment_daily_limit"`
-	PaymentOrderTimeoutMin           int      `json:"payment_order_timeout_minutes"`
-	PaymentMaxPendingOrders          int      `json:"payment_max_pending_orders"`
-	PaymentEnabledTypes              []string `json:"payment_enabled_types"`
-	PaymentBalanceDisabled           bool     `json:"payment_balance_disabled"`
-	PaymentBalanceRechargeMultiplier float64  `json:"payment_balance_recharge_multiplier"`
-	PaymentSubscriptionUSDToCNYRate  float64  `json:"payment_subscription_usd_to_cny_rate"`
-	PaymentRechargeFeeRate           float64  `json:"payment_recharge_fee_rate"`
+	PaymentEnabled                    bool     `json:"payment_enabled"`
+	PaymentMinAmount                  float64  `json:"payment_min_amount"`
+	PaymentMaxAmount                  float64  `json:"payment_max_amount"`
+	PaymentDailyLimit                 float64  `json:"payment_daily_limit"`
+	PaymentOrderTimeoutMin            int      `json:"payment_order_timeout_minutes"`
+	PaymentMaxPendingOrders           int      `json:"payment_max_pending_orders"`
+	PaymentEnabledTypes               []string `json:"payment_enabled_types"`
+	PaymentBalanceDisabled            bool     `json:"payment_balance_disabled"`
+	PaymentBalanceRechargeMultiplier  float64  `json:"payment_balance_recharge_multiplier"`
+	PaymentBalanceDisplayUSDToCNYRate float64  `json:"payment_balance_display_usd_to_cny_rate"`
+	PaymentSubscriptionUSDToCNYRate   float64  `json:"payment_subscription_usd_to_cny_rate"`
+	PaymentRechargeFeeRate            float64  `json:"payment_recharge_fee_rate"`
 	// 充值赠送阶梯与活动文案
 	PaymentRechargeBonusTiers  []RechargeBonusTier `json:"payment_recharge_bonus_tiers"`
 	PaymentRechargeBonusMode   string              `json:"payment_recharge_bonus_mode"`
@@ -420,9 +421,10 @@ type PublicSettings struct {
 	// PaymentBalanceDisabled mirrors the payment-config BALANCE_PAYMENT_DISABLED switch so the
 	// user shell can derive the site billing mode (recharge & subscription / recharge only /
 	// subscription only) before any authenticated checkout call.
-	PaymentBalanceDisabled          bool    `json:"payment_balance_disabled"`
-	PaymentSubscriptionUSDToCNYRate float64 `json:"payment_subscription_usd_to_cny_rate"`
-	Version                         string  `json:"version"`
+	PaymentBalanceDisabled            bool    `json:"payment_balance_disabled"`
+	PaymentSubscriptionUSDToCNYRate   float64 `json:"payment_subscription_usd_to_cny_rate"`
+	PaymentBalanceDisplayUSDToCNYRate float64 `json:"payment_balance_display_usd_to_cny_rate"`
+	Version                           string  `json:"version"`
 	// 服务器全局时区（IANA 名称与当前 UTC 偏移，如 "Asia/Shanghai" / "+08:00"）。
 	// 高峰时段等按服务器本地时间判定的窗口，前端展示时据此标注，避免用户按浏览器本地时间误读。
 	ServerTimezone              string  `json:"server_timezone"`
