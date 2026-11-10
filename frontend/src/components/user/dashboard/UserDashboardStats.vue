@@ -11,7 +11,7 @@
         </div>
         <div>
           <p class="text-xs font-medium text-gray-500 dark:text-gray-400">{{ t('dashboard.balance') }}</p>
-          <p class="text-xl font-bold text-emerald-600 dark:text-emerald-400">${{ formatBalance(balance) }}</p>
+          <p class="text-xl font-bold text-emerald-600 dark:text-emerald-400">{{ formatBalance(balance) }}</p>
           <p class="text-xs text-gray-500 dark:text-gray-400">{{ t('common.available') }}</p>
         </div>
       </div>
@@ -230,6 +230,7 @@ import { useI18n } from 'vue-i18n'
 import Icon from '@/components/icons/Icon.vue'
 import type { PlatformDashboardStats, UserDashboardStats as UserStatsType } from '@/api/usage'
 import type { PlatformQuotaItem } from '@/types'
+import { formatBalanceCurrency } from '@/utils/balanceCurrency'
 
 interface FusedPlatformCard {
   platform: string
@@ -244,6 +245,7 @@ interface FusedPlatformCard {
 const props = defineProps<{
   stats: UserStatsType
   balance: number
+  balanceDisplayRate?: number
   isSimple: boolean
   platformQuotas?: PlatformQuotaItem[] | null
 }>()
@@ -386,10 +388,7 @@ function formatResetTime(iso: string | null | undefined): string {
 }
 
 const formatBalance = (b: number) =>
-  new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  }).format(b)
+  formatBalanceCurrency(b, props.balanceDisplayRate)
 
 const formatNumber = (n: number) => n.toLocaleString()
 const formatCost = (c: number) => c.toFixed(4)
