@@ -1,12 +1,12 @@
 <template>
   <AppLayout>
     <main class="mx-auto w-full max-w-[1500px] space-y-6">
-      <section class="catalog-hero relative overflow-hidden rounded-3xl border border-primary-200/70 bg-gradient-to-br from-white via-primary-50/80 to-cyan-50/70 p-6 shadow-sm dark:border-primary-900/50 dark:from-dark-900 dark:via-dark-900 dark:to-primary-950/30 sm:p-8">
+      <section class="catalog-hero relative overflow-hidden rounded-3xl border border-primary-200/70 bg-gradient-to-br from-white via-primary-50/80 to-cyan-50/70 px-5 py-4 shadow-sm dark:border-primary-900/50 dark:from-dark-900 dark:via-dark-900 dark:to-primary-950/30 sm:px-6 sm:py-5">
         <div class="pointer-events-none absolute -right-20 -top-28 h-72 w-72 rounded-full bg-primary-300/20 blur-3xl dark:bg-primary-500/10"></div>
         <div class="pointer-events-none absolute -bottom-32 right-1/3 h-56 w-56 rounded-full bg-cyan-300/20 blur-3xl dark:bg-cyan-500/10"></div>
-        <div class="relative flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+        <div class="relative flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
           <div class="max-w-3xl">
-            <div class="mb-3 inline-flex items-center gap-2 rounded-full border border-primary-200/80 bg-white/70 px-3 py-1 text-xs font-semibold tracking-wide text-primary-700 dark:border-primary-800 dark:bg-dark-800/70 dark:text-primary-300">
+            <div class="mb-2 inline-flex items-center gap-2 rounded-full border border-primary-200/80 bg-white/70 px-3 py-1 text-xs font-semibold tracking-wide text-primary-700 dark:border-primary-800 dark:bg-dark-800/70 dark:text-primary-300">
               <Icon name="sparkles" size="xs" />
               {{ t('modelPlaza.title') }}
             </div>
@@ -260,8 +260,8 @@ onUnmounted(() => abortController?.abort())
   color: transparent;
   text-shadow: none;
   letter-spacing: -.04em;
-  font-size: clamp(2.25rem, 4.4vw, 3.75rem);
-  line-height: 1.04;
+  font-size: clamp(1.875rem, 3.2vw, 2.75rem);
+  line-height: 1.1;
 }
 .catalog-hero > .relative { z-index: 1; }
 .catalog-hero p {
