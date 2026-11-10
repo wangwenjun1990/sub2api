@@ -282,6 +282,21 @@ const DashboardIcon = {
     )
 }
 
+const PlazaIcon = {
+  render: () =>
+    h(
+      'svg',
+      { fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor', 'stroke-width': '1.5' },
+      [
+        h('path', {
+          'stroke-linecap': 'round',
+          'stroke-linejoin': 'round',
+          d: 'M4.5 6.75A2.25 2.25 0 016.75 4.5h2.5A2.25 2.25 0 0111.5 6.75v2.5a2.25 2.25 0 01-2.25 2.25h-2.5A2.25 2.25 0 014.5 9.25v-2.5zm8 0a2.25 2.25 0 012.25-2.25h2.5a2.25 2.25 0 012.25 2.25v2.5a2.25 2.25 0 01-2.25 2.25h-2.5a2.25 2.25 0 01-2.25-2.25v-2.5zm-8 8a2.25 2.25 0 012.25-2.25h2.5a2.25 2.25 0 012.25 2.25v2.5a2.25 2.25 0 01-2.25 2.25h-2.5a2.25 2.25 0 01-2.25-2.25v-2.5zm8 0a2.25 2.25 0 012.25-2.25h2.5a2.25 2.25 0 012.25 2.25v2.5a2.25 2.25 0 01-2.25 2.25h-2.5a2.25 2.25 0 01-2.25-2.25v-2.5z'
+        })
+      ]
+    )
+}
+
 const KeyIcon = {
   render: () =>
     h(
@@ -696,6 +711,7 @@ const ChevronDownIcon = {
 const flagChannelMonitor = makeSidebarFlag(FeatureFlags.channelMonitor)
 const flagPayment = makeSidebarFlag(FeatureFlags.payment)
 const flagAvailableChannels = makeSidebarFlag(FeatureFlags.availableChannels)
+const flagModelPlaza = makeSidebarFlag(FeatureFlags.modelPlaza)
 const flagSubscription = makeSidebarFlag(FeatureFlags.subscription)
 
 // 购买入口文案随站点计费模式切换：仅充值 → 「充值」，仅订阅 → 「订阅」，否则「充值/订阅」。
@@ -731,6 +747,7 @@ function buildSelfNavItems(withDashboard: boolean): NavItem[] {
     { path: '/keys', label: t('nav.apiKeys'), icon: KeyIcon },
     { path: '/batch-image', label: t('nav.batchImage'), icon: BatchImageIcon, hideInSimpleMode: true, featureFlag: flagBatchImageAccess },
     { path: '/usage', label: t('nav.usage'), icon: ChartIcon, hideInSimpleMode: true },
+    { path: '/model-plaza/catalog', label: t('nav.modelPlaza'), icon: PlazaIcon, featureFlag: flagModelPlaza },
     { path: '/available-channels', label: t('nav.availableChannels'), icon: ChannelIcon, hideInSimpleMode: true, featureFlag: flagAvailableChannels },
     { path: '/monitor', label: t('nav.channelStatus'), icon: SignalIcon, featureFlag: flagChannelMonitor },
     { path: '/subscriptions', label: t('nav.mySubscriptions'), icon: CreditCardIcon, hideInSimpleMode: true, featureFlag: flagSubscription },

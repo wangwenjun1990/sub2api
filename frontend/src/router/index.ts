@@ -204,6 +204,18 @@ const routes: RouteRecordRaw[] = [
     }
   },
   {
+    path: '/model-plaza/catalog',
+    name: 'ModelPlazaCatalog',
+    component: () => import('@/views/user/ModelPlazaCatalogView.vue'),
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: false,
+      title: 'Model Plaza',
+      titleKey: 'modelPlaza.title',
+      descriptionKey: 'modelPlaza.description'
+    }
+  },
+  {
     path: '/keys',
     name: 'Keys',
     component: () => import('@/views/user/KeysView.vue'),
@@ -822,6 +834,12 @@ router.beforeEach(async (to, _from, next) => {
     ...(authStore.isAdmin ? adminSettingsStore.customMenuItems : []),
   ]
   document.title = resolveRouteDocumentTitle(to, appStore.siteName, customMenuItems)
+
+  // Temporary local visual-review shortcut; remove after the mock-data preview is finished.
+  if (to.path === '/model-plaza/catalog' && to.query.preview === '1') {
+    next()
+    return
+  }
 
   // Check if route requires authentication
   const requiresAuth = to.meta.requiresAuth !== false // Default to true
