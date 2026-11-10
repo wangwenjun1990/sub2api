@@ -8,10 +8,10 @@ const cnyFormatter = new Intl.NumberFormat('zh-CN', {
   maximumFractionDigits: 2,
 })
 
-export function formatBalanceCurrency(
+export function formatBalanceCurrencyParts(
   usdAmount: number | null | undefined,
   usdToCnyRate: number | null | undefined,
-): string {
+): { amount: string; approximateUsd: string | null } {
   const amount = typeof usdAmount === 'number' && Number.isFinite(usdAmount) ? usdAmount : 0
   const usd = usdFormatter.format(amount)
   const rate = typeof usdToCnyRate === 'number' && Number.isFinite(usdToCnyRate)
@@ -19,8 +19,16 @@ export function formatBalanceCurrency(
     : 0
 
   if (rate <= 0 || !Number.isFinite(amount * rate)) {
-    return `$${usd}`
+    return { amount: `$${usd}`, approximateUsd: null }
   }
 
-  return `¥${cnyFormatter.format(amount * rate)} (≈ $${usd})`
+  return { amount: `¥${cnyFormatter.format(amount * rate)}`, approximateUsd: `≈ $${usd}` }
+}
+
+export function formatBalanceCurrency(
+  usdAmount: number | null | undefined,
+  usdToCnyRate: number | null | undefined,
+): string {
+  const { amount, approximateUsd } = formatBalanceCurrencyParts(usdAmount, usdToCnyRate)
+  return approximateUsd ? `${amount} (${approximateUsd})` : amount
 }

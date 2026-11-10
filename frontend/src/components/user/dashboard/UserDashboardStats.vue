@@ -11,7 +11,12 @@
         </div>
         <div>
           <p class="text-xs font-medium text-gray-500 dark:text-gray-400">{{ t('dashboard.balance') }}</p>
-          <p class="text-xl font-bold text-emerald-600 dark:text-emerald-400">{{ formatBalance(balance) }}</p>
+          <p class="flex flex-wrap items-baseline gap-x-1.5 text-xl font-bold text-emerald-600 dark:text-emerald-400">
+            <span>{{ balanceCurrency.amount }}</span>
+            <span v-if="balanceCurrency.approximateUsd" class="whitespace-nowrap text-xs font-normal tracking-normal text-gray-400 dark:text-gray-300">
+              ({{ balanceCurrency.approximateUsd }})
+            </span>
+          </p>
           <p class="text-xs text-gray-500 dark:text-gray-400">{{ t('common.available') }}</p>
         </div>
       </div>
@@ -230,7 +235,7 @@ import { useI18n } from 'vue-i18n'
 import Icon from '@/components/icons/Icon.vue'
 import type { PlatformDashboardStats, UserDashboardStats as UserStatsType } from '@/api/usage'
 import type { PlatformQuotaItem } from '@/types'
-import { formatBalanceCurrency } from '@/utils/balanceCurrency'
+import { formatBalanceCurrencyParts } from '@/utils/balanceCurrency'
 
 interface FusedPlatformCard {
   platform: string
@@ -363,7 +368,7 @@ function quotaBarClass(p: number): string {
   return 'bg-green-500'
 }
 
-// 与 formatBalance 一致使用 Intl.NumberFormat 做半偶舍入，避免 toFixed 在不同 JS 引擎
+// 与余额格式化一致使用 Intl.NumberFormat 做半偶舍入，避免 toFixed 在不同 JS 引擎
 // 下偶发截断而非四舍五入（与后端展示精度不一致）。
 const usdFormatter = new Intl.NumberFormat('en-US', {
   minimumFractionDigits: 2,
@@ -387,8 +392,9 @@ function formatResetTime(iso: string | null | undefined): string {
   })
 }
 
-const formatBalance = (b: number) =>
-  formatBalanceCurrency(b, props.balanceDisplayRate)
+const balanceCurrency = computed(() =>
+  formatBalanceCurrencyParts(props.balance, props.balanceDisplayRate)
+)
 
 const formatNumber = (n: number) => n.toLocaleString()
 const formatCost = (c: number) => c.toFixed(4)
