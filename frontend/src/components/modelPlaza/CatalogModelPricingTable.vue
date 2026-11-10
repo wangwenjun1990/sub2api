@@ -17,7 +17,7 @@
         >
           <th
             rowspan="2"
-            class="border-r border-gray-100 py-2.5 pl-5 pr-4 text-left align-middle dark:border-dark-700/60"
+            class="pz-model border-r border-gray-100 py-2.5 pl-5 pr-4 text-left align-middle dark:border-dark-700/60"
           >
             {{ t('modelPlaza.table.model') }}
           </th>
@@ -58,12 +58,12 @@
       </thead>
       <tbody>
         <tr
-          v-for="{ model: m, period, key, showRate, rateRowspan } in rows"
+          v-for="{ model: m, period, key } in rows"
           :key="key"
           class="border-b border-gray-100 transition-colors last:border-b-0 hover:bg-gray-50/70 dark:border-dark-800 dark:hover:bg-dark-800/50"
         >
           <!-- 模型名 + 非 token 计费模式徽章;分时时段行额外标注时段 -->
-          <td class="border-r border-gray-100 py-2.5 pl-5 pr-4 align-middle dark:border-dark-700/60">
+          <td class="pz-model border-r border-gray-100 py-2.5 pl-5 pr-4 align-middle dark:border-dark-700/60">
             <div class="flex flex-wrap items-center gap-1.5">
               <span class="font-medium text-gray-900 dark:text-white">{{ m.name }}</span>
               <!-- 时段徽章紧跟模型名,其余徽章排在后面,空间不足时先换行的是它们 -->
@@ -280,9 +280,7 @@
 
           <!-- 折扣倍率(分时时段行展示 生效倍率×时段倍率;生图独立倍率行展示独立倍率;专属倍率划线展示原倍率) -->
           <td
-            v-if="showRate"
-            :rowspan="rateRowspan"
-            class="border-l border-gray-100 py-2.5 pl-3 pr-5 text-right align-middle font-mono text-xs dark:border-dark-700/60"
+            class="pz-rate border-l border-gray-100 py-2.5 pl-3 pr-5 text-right align-middle font-mono text-xs dark:border-dark-700/60"
           >
             <span
               v-if="period"
@@ -353,7 +351,6 @@ const props = defineProps<{
    */
   peakWindow?: string
   peakRateMultiplier?: number | null
-  mergeEqualRateRows?: boolean
 }>()
 
 const { t } = useI18n()
@@ -406,40 +403,22 @@ interface PlazaRow {
   model: PlazaModel
   period: PlazaTimePricingPeriod | null
   key: string
-  showRate: boolean
-  rateRowspan: number
 }
 
 const rows = computed<PlazaRow[]>(() => {
-  const expandedRows = sortedModels.value.flatMap((m) => {
+  return sortedModels.value.flatMap((m) => {
     const base: PlazaRow = {
       model: m,
       period: null,
-      key: `${m.platform}:${m.name}`,
-      showRate: true,
-      rateRowspan: 1
+      key: `${m.platform}:${m.name}`
     }
     const periodRows = timePeriods(m).map<PlazaRow>((p, idx) => ({
       model: m,
       period: p,
-      key: `${m.platform}:${m.name}:${idx}`,
-      showRate: true,
-      rateRowspan: 1
+      key: `${m.platform}:${m.name}:${idx}`
     }))
     return [base, ...periodRows]
   })
-
-  if (!props.mergeEqualRateRows) return expandedRows
-
-  for (let start = 0; start < expandedRows.length;) {
-    const signature = rateCellSignature(expandedRows[start])
-    let end = start + 1
-    while (end < expandedRows.length && rateCellSignature(expandedRows[end]) === signature) end += 1
-    expandedRows[start].rateRowspan = end - start
-    for (let index = start + 1; index < end; index += 1) expandedRows[index].showRate = false
-    start = end
-  }
-  return expandedRows
 })
 
 /** 时段行的生效倍率 = 生效倍率 × 时段倍率(去掉浮点噪声)。 */
@@ -468,13 +447,6 @@ function requestRate(m: PlazaModel): number {
   return billingMode(m) === BILLING_MODE_IMAGE && props.imageRateIndependent === true
     ? (props.imageRateMultiplier ?? 1)
     : effectiveRate.value
-}
-
-function rateCellSignature(row: PlazaRow): string {
-  if (row.period) return `period:${row.key}`
-  if (usesIndependentMediaRate(row.model)) return `independent:${requestRate(row.model)}`
-  if (hasCustomRate.value) return `custom:${props.rateMultiplier}:${effectiveRate.value}`
-  return `group:${effectiveRate.value}`
 }
 
 /** 非 token 单价乘该行生效倍率，不换算为每百万 token。 */
@@ -594,14 +566,78 @@ function trimZero(n: number): string {
 /* 实付分区配色统一从 --plaza-accent(平台主色)派生,新增平台无需扩展样式 */
 .plaza-pricing-table {
   --pz-title: color-mix(in srgb, var(--plaza-accent) 88%, black);
-  --pz-bg: color-mix(in srgb, var(--plaza-accent) 7%, transparent);
-  --pz-bg-hover: color-mix(in srgb, var(--plaza-accent) 13%, transparent);
+  --pz-bg: color-mix(in srgb, var(--plaza-accent) 9%, white);
+  --pz-bg-hover: color-mix(in srgb, var(--plaza-accent) 15%, white);
+  --pz-row-bg: #fff;
+  --pz-stripe: #f8fafc;
+  --pz-hover: #eef2ff;
+  --pz-line: #e2e8f0;
+  border-radius: 0 0 1.25rem 1.25rem;
+  scrollbar-color: var(--pz-line) transparent;
+  scrollbar-width: thin;
 }
 
 .dark .plaza-pricing-table {
   --pz-title: color-mix(in srgb, var(--plaza-accent) 70%, white);
-  --pz-bg: color-mix(in srgb, var(--plaza-accent) 6%, transparent);
-  --pz-bg-hover: color-mix(in srgb, var(--plaza-accent) 10%, transparent);
+  --pz-bg: color-mix(in srgb, var(--plaza-accent) 10%, #111827);
+  --pz-bg-hover: color-mix(in srgb, var(--plaza-accent) 15%, #111827);
+  --pz-row-bg: #111827;
+  --pz-stripe: #1f2937;
+  --pz-hover: #1e293b;
+  --pz-line: #374151;
+}
+
+.plaza-pricing-table table {
+  min-width: 1120px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.plaza-pricing-table thead th[colspan] {
+  padding: 0.625rem 0.75rem 0;
+}
+
+.plaza-pricing-table thead th[colspan] > div {
+  padding-bottom: 0.625rem;
+}
+
+.plaza-pricing-table thead tr:last-child,
+.plaza-pricing-table tbody tr:nth-child(even) {
+  background-color: var(--pz-stripe);
+}
+
+.plaza-pricing-table tbody tr:nth-child(odd) {
+  background-color: var(--pz-row-bg);
+}
+
+.plaza-pricing-table tbody tr:hover {
+  background-color: var(--pz-hover);
+}
+
+.plaza-pricing-table tbody tr:not(:last-child) > td {
+  border-bottom: 1px solid var(--pz-line);
+}
+
+.pz-model {
+  position: sticky;
+  left: 0;
+  z-index: 10;
+  padding-block: 0.75rem;
+  background-color: inherit;
+  box-shadow: 1px 0 0 var(--pz-line), 8px 0 14px -14px rgb(15 23 42 / 55%);
+}
+
+thead .pz-model {
+  z-index: 20;
+  background-color: var(--pz-stripe);
+}
+
+.pz-rate > span:not(.line-through) {
+  @apply inline-flex min-w-12 justify-center rounded-full bg-gray-100 px-2 py-0.5 dark:bg-dark-700;
+}
+
+.pz-rate > .text-primary-600 {
+  @apply bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300;
 }
 
 .pz-bg,

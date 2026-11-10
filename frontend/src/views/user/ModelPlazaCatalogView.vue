@@ -1,12 +1,12 @@
 <template>
   <AppLayout>
     <main class="mx-auto w-full max-w-[1500px] space-y-6">
-      <section class="catalog-hero relative overflow-hidden rounded-3xl border border-primary-200/70 bg-gradient-to-br from-white via-primary-50/80 to-cyan-50/70 p-6 shadow-sm dark:border-primary-900/50 dark:from-dark-900 dark:via-dark-900 dark:to-primary-950/30 sm:p-8">
+      <section class="catalog-hero relative overflow-hidden rounded-3xl border border-primary-200/70 bg-gradient-to-br from-white via-primary-50/80 to-cyan-50/70 px-5 py-4 shadow-sm dark:border-primary-900/50 dark:from-dark-900 dark:via-dark-900 dark:to-primary-950/30 sm:px-6 sm:py-5">
         <div class="pointer-events-none absolute -right-20 -top-28 h-72 w-72 rounded-full bg-primary-300/20 blur-3xl dark:bg-primary-500/10"></div>
         <div class="pointer-events-none absolute -bottom-32 right-1/3 h-56 w-56 rounded-full bg-cyan-300/20 blur-3xl dark:bg-cyan-500/10"></div>
-        <div class="relative flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+        <div class="relative flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
           <div class="max-w-3xl">
-            <div class="mb-3 inline-flex items-center gap-2 rounded-full border border-primary-200/80 bg-white/70 px-3 py-1 text-xs font-semibold tracking-wide text-primary-700 dark:border-primary-800 dark:bg-dark-800/70 dark:text-primary-300">
+            <div class="mb-2 inline-flex items-center gap-2 rounded-full border border-primary-200/80 bg-white/70 px-3 py-1 text-xs font-semibold tracking-wide text-primary-700 dark:border-primary-800 dark:bg-dark-800/70 dark:text-primary-300">
               <Icon name="sparkles" size="xs" />
               {{ t('modelPlaza.title') }}
             </div>
@@ -82,7 +82,7 @@
             </label>
           </div>
 
-          <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          <div class="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             <button
               v-for="group in platformGroups(selectedPlatform)"
               :key="group.id"
@@ -92,16 +92,16 @@
               :style="{ '--platform-accent': platformAccentColor(group.platform) }"
               @click="selectedGroupId = group.id"
             >
-              <span class="flex min-w-0 items-start justify-between gap-3">
+              <span class="flex min-w-0 items-start justify-between gap-2">
                 <span class="min-w-0 text-left">
-                  <span class="block truncate text-base font-semibold text-gray-900 dark:text-white">{{ group.name }}</span>
-                  <span class="mt-1 block line-clamp-2 text-xs leading-5 text-gray-500 dark:text-dark-400">{{ group.description || t('modelPlaza.detail.noModels') }}</span>
+                  <span class="block truncate text-sm font-semibold text-gray-900 dark:text-white">{{ group.name }}</span>
+                  <span class="mt-1 block truncate text-xs leading-5 text-gray-500 dark:text-dark-400" :title="group.description || undefined">{{ group.description || t('modelPlaza.detail.noModels') }}</span>
                 </span>
-                <span class="shrink-0 rounded-xl bg-white/80 px-2.5 py-1.5 font-mono text-sm font-bold text-gray-800 shadow-sm ring-1 ring-gray-200/80 dark:bg-dark-900/70 dark:text-white dark:ring-dark-600">
+                <span class="shrink-0 rounded-lg bg-white/80 px-2 py-1 font-mono text-xs font-bold text-gray-800 shadow-sm ring-1 ring-gray-200/80 dark:bg-dark-900/70 dark:text-white dark:ring-dark-600">
                   {{ effectiveRate(group) }}x
                 </span>
               </span>
-              <span class="mt-4 flex items-center justify-between gap-2">
+              <span class="mt-2 flex items-center justify-between gap-2">
                 <span class="flex flex-wrap gap-1.5">
                   <span v-if="group.is_exclusive" class="group-tag group-tag-purple">{{ t('modelPlaza.badges.exclusive') }}</span>
                   <span v-if="group.subscription_type === 'subscription'" class="group-tag group-tag-blue">{{ t('modelPlaza.badges.subscription') }}</span>
@@ -260,8 +260,8 @@ onUnmounted(() => abortController?.abort())
   color: transparent;
   text-shadow: none;
   letter-spacing: -.04em;
-  font-size: clamp(2.25rem, 4.4vw, 3.75rem);
-  line-height: 1.04;
+  font-size: clamp(1.875rem, 3.2vw, 2.75rem);
+  line-height: 1.1;
 }
 .catalog-hero > .relative { z-index: 1; }
 .catalog-hero p {
@@ -313,7 +313,7 @@ onUnmounted(() => abortController?.abort())
   @apply rounded-md bg-gray-100 px-1.5 py-0.5 text-[10px] font-semibold text-gray-500 dark:bg-dark-700 dark:text-dark-300;
 }
 .group-card {
-  @apply relative overflow-hidden rounded-2xl border border-gray-200 bg-gradient-to-br from-white to-gray-50/80 p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-gray-300 hover:shadow-md dark:border-dark-700 dark:from-dark-800 dark:to-dark-800/70 dark:hover:border-dark-600;
+  @apply relative overflow-hidden rounded-xl border border-gray-200 bg-gradient-to-br from-white to-gray-50/80 p-3 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-gray-300 hover:shadow-md dark:border-dark-700 dark:from-dark-800 dark:to-dark-800/70 dark:hover:border-dark-600;
 }
 .group-card::before {
   position: absolute;
@@ -334,7 +334,7 @@ onUnmounted(() => abortController?.abort())
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--platform-accent) 15%, transparent), 0 8px 22px color-mix(in srgb, var(--platform-accent) 10%, transparent);
 }
 .group-card {
-  min-height: 132px;
+  min-height: 104px;
   transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
 }
 .dark .group-card-active {
