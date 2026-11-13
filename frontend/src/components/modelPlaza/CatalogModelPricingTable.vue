@@ -6,6 +6,7 @@
           <strong>{{ m.name }}</strong>
           <CatalogSavingsBadge :comparison="compareCatalogModel(m, period ? periodRate(period) : effectiveRate)" />
         </div>
+        <p class="mobile-effective-rate"><span>{{ (locale ?? 'zh').startsWith('zh') ? '生效倍率' : 'Effective rate' }}</span><strong>{{ billingMode(m) === BILLING_MODE_TOKEN ? (period ? periodRate(period) : effectiveRate) : requestRate(m) }}×</strong></p>
         <p v-if="period" class="mobile-price-note">
           {{ m.time_pricing?.weekdays_only ? t('modelPlaza.table.timePricingWeekdays') : '' }}
           {{ formatTimeWindow(period) }} · {{ m.time_pricing?.timezone }}
@@ -75,7 +76,7 @@
             rowspan="2"
             class="border-l border-gray-100 py-2.5 pl-3 pr-5 text-right align-middle dark:border-dark-700/60"
           >
-            {{ (locale ?? 'zh').startsWith('zh') ? '官方折扣 / 倍率' : 'Savings / rate' }}
+            {{ (locale ?? 'zh').startsWith('zh') ? '节省幅度 / 倍率' : 'Savings / rate' }}
           </th>
         </tr>
         <tr
@@ -607,8 +608,10 @@ function trimZero(n: number): string {
 <style scoped>
 .catalog-mobile-prices { background: var(--cat-bg, #fff); }
 .mobile-price-card { padding: 18px; border-bottom: 1px solid var(--cat-line, #e2e8f0); }
-.mobile-price-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.mobile-price-heading { display: flex; flex-wrap:wrap; justify-content: space-between; align-items: flex-start; gap: 12px; }
 .mobile-price-heading > strong { font-size: 13px; overflow-wrap: anywhere; }
+.mobile-effective-rate { display:flex; align-items:center; gap:8px; margin-top:12px; font-size:10px; color:var(--cat-muted,#64748b); }
+.mobile-effective-rate strong { padding:3px 8px; border:1px solid rgb(217 119 6 / 25%); border-radius:6px; background:rgb(245 158 11 / 10%); color:var(--cat-ink,#1e293b); font-size:15px; font-weight:750; font-variant-numeric:tabular-nums; }
 .mobile-price-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0 10px; }
 .mobile-price-pair > div { display: flex; flex-direction: column; gap: 5px; }
 .mobile-price-pair span, .mobile-price-note { color: var(--cat-muted, #64748b); font-size: 10px; line-height: 1.8; }
@@ -690,12 +693,19 @@ thead .pz-model {
 }
 
 .pz-rate > span:not(.line-through) {
-  @apply inline-flex min-w-12 justify-center rounded-full bg-gray-100 px-2 py-0.5 dark:bg-dark-700;
+  @apply inline-flex min-w-12 justify-center rounded-md px-2 py-1;
+  background:color-mix(in srgb,#f59e0b 12%,transparent);
+  border:1px solid color-mix(in srgb,#d97706 25%,transparent);
+  font-size:15px;
+  line-height:1.2;
+  font-weight:750;
 }
 
 .pz-rate > .text-primary-600 {
-  @apply bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300;
+  @apply text-primary-700 dark:text-primary-300;
 }
+
+.pz-rate { background-image:linear-gradient(135deg,rgb(16 185 129 / 7%),rgb(16 185 129 / 2%)); }
 
 .pz-bg,
 .pz-cell {

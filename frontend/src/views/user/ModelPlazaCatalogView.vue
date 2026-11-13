@@ -173,9 +173,9 @@ h2 { display:flex; align-items:center; flex-wrap:wrap; gap:12px; margin-top:6px;
 .selection-mark { display:flex; justify-content:center; align-items:center; width:16px; height:16px; flex-shrink:0; border:1px solid var(--cat-line); border-radius:50%; font-size:10px; }
 .active .selection-mark { color:var(--cat-bg); background:var(--cat-accent); border-color:var(--cat-accent); }
 .group-description { margin:9px 0 17px; color:var(--cat-muted); font-size:11px; line-height:1.8; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-.group-comparison { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-top:auto; }
-.group-rate { font-size:14px; font-weight:650; font-variant-numeric:tabular-nums; }
-.group-rate small { font-size:10px; font-weight:400; color:var(--cat-muted); }
+.group-comparison { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px 10px; margin-top:auto; padding:14px 0 2px; border-top:1px solid var(--cat-line); }
+.group-rate { display:flex; flex-direction:column; align-items:flex-end; gap:4px; padding:8px 10px; border:1px solid color-mix(in srgb,#d97706 25%,var(--cat-line)); border-radius:9px; background:color-mix(in srgb,#f59e0b 9%,var(--cat-bg)); color:var(--cat-ink); font-size:24px; line-height:1.1; letter-spacing:-.04em; font-weight:800; font-variant-numeric:tabular-nums; }
+.group-rate small { font-size:10px; letter-spacing:.04em; font-weight:600; color:var(--cat-muted); }
 .group-footer { display:flex; flex-wrap:wrap; gap:8px; padding-top:13px; margin-top:14px; border-top:1px solid var(--cat-line); color:var(--cat-muted); font-size:10px; }
 .group-footer span + span { color:var(--cat-accent); }
 .catalog-pricing { margin-top:30px; min-width:0; }
