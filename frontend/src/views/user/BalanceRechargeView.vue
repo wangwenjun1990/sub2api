@@ -6,12 +6,11 @@
         <div class="re-hero-copy"><span class="re-eyebrow"><i></i> ACCOUNT / BALANCE</span><h1>{{ zh ? '为下一个好点子' : 'A little credit.' }}<br /><em>{{ zh ? '充点能量。' : 'A lot of possibility.' }}</em></h1><p>{{ zh ? '小额充值，随心调用。让每一份预算，都用在创造上。' : 'Top up as you go. Put your budget into building something great.' }}</p><div class="re-hero-tags"><span>{{ zh ? '按量消费' : 'Pay as you go' }}</span><span>{{ zh ? '到账明细清晰' : 'Transparent credit' }}</span><span>{{ zh ? '单次最高 1,000' : 'Up to 1,000 per top-up' }}</span></div></div>
         <div class="re-balance-card"><div class="re-balance-top"><span>{{ t('payment.currentBalance') }}</span><Icon name="creditCard" size="md" /></div><strong><small>$</small>{{ (user?.balance ?? 0).toFixed(2) }}<small>USD</small></strong><div class="re-balance-bottom"><span>{{ user?.username || user?.email || '—' }}</span><RouterLink to="/orders">{{ zh ? '查看记录' : 'View orders' }} <span aria-hidden="true">↗</span></RouterLink></div><div class="re-card-orbit" aria-hidden="true"></div></div>
       </header>
-      <div v-if="loadError" class="re-load-error re-panel" role="alert"><span>{{ loadError }}</span><button type="button" @click="loadCheckout">{{ zh ? '重新加载' : 'Try again' }}</button></div>
       <div v-if="errorMessage" class="re-inline-error" role="alert">{{ errorMessage }}<p v-if="errorHintMessage">{{ errorHintMessage }}</p></div>
       <div v-if="loading" class="flex items-center justify-center py-20">
         <div class="h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></div>
       </div>
-      <template v-else-if="!loadError">
+      <template v-else>
         <!-- Tab Switcher (hide during payment and subscription confirm) -->
         <div v-if="tabs.length > 1 && paymentPhase === 'select' && !selectedPlan" class="re-tabs">
           <button v-for="tab in tabs" :key="tab.key"
@@ -51,7 +50,7 @@
                   <div class="re-section-heading"><div><span class="re-eyebrow">01 / AMOUNT</span><h2>{{ zh ? '选择充值金额' : 'Choose your amount' }}</h2></div><span class="re-currency-tag">{{ selectedCurrency }}</span></div>
                   <p class="re-section-description">{{ zh ? '按需充值，从小额开始。每一笔到账都清清楚楚。' : 'Start small and top up as needed. See exactly what you receive.' }}</p>
                   <div v-if="renderedBonusNotice" class="re-notice markdown-body" data-testid="recharge-bonus-notice" v-html="renderedBonusNotice"></div>
-                  <BalanceAmountPicker v-model="amount" :amounts="rechargePresets" :max="BALANCE_RECHARGE_MAX" :bonus-tiers="rechargeBonusTiers" :bonus-mode="rechargeBonusMode" :multiplier="balanceRechargeMultiplier" :currency="selectedCurrency" :error="amountError" />
+                  <BalanceAmountPicker v-model="amount" :amounts="[10, 20, 50, 100, 500, 1000].filter(value => (globalMinAmount <= 0 || value >= globalMinAmount) && (globalMaxAmount <= 0 || value <= globalMaxAmount))" :max="1000" :bonus-tiers="rechargeBonusTiers" :bonus-mode="rechargeBonusMode" :multiplier="balanceRechargeMultiplier" :currency="selectedCurrency" :error="validAmount > 1000 ? (zh ? '单次充值最高 1000' : 'Maximum top-up: 1,000') : amountError" />
                 </section>
                 <section class="re-panel re-method-panel">
                   <div class="re-section-heading"><div><span class="re-eyebrow">02 / PAYMENT</span><h2>{{ zh ? '选择支付方式' : 'Choose a payment method' }}</h2></div></div>
@@ -71,7 +70,7 @@
                   <div><dt>{{ zh ? '到账倍率' : 'Credit rate' }}</dt><dd>1 {{ selectedCurrency }} = {{ formatRechargeBonusNumber(balanceRechargeMultiplier) }} USD</dd></div>
                 </dl>
                 <div class="re-total"><span>{{ t('payment.actualPay') }} <small>{{ selectedCurrency }}</small></span><strong>{{ formatSelectedPaymentAmount(totalAmount) }}</strong></div>
-                <button type="button" class="re-pay-button" :disabled="!canSubmit || submitting" @click="handleSubmitRecharge"><span v-if="submitting" class="re-spinner"></span>{{ submitting ? t('common.processing') : (zh ? '确认充值' : 'Confirm top-up') }}<span v-if="!submitting" aria-hidden="true">→</span></button>
+                <button type="button" class="re-pay-button" :disabled="!canSubmit || validAmount > 1000 || submitting" @click="handleSubmitRecharge"><span v-if="submitting" class="re-spinner"></span>{{ submitting ? t('common.processing') : (zh ? '确认充值' : 'Confirm top-up') }}<span v-if="!submitting" aria-hidden="true">→</span></button>
                 <p class="re-payment-note">{{ zh ? '请核对充值账户与金额后继续支付' : 'Check your account and amount before paying' }}</p>
                 <div class="re-account"><span class="re-avatar" aria-hidden="true">{{ (user?.username || 'U').slice(0,1).toUpperCase() }}</span><div><span>{{ t('payment.rechargeAccount') }}</span><strong>{{ user?.username || user?.email || '—' }}</strong></div><RouterLink to="/orders">{{ zh ? '充值记录' : 'Orders' }} ↗</RouterLink></div>
               </aside>
@@ -260,7 +259,6 @@ import type { SubscriptionPlan, CheckoutInfoResponse, CreateOrderResult, OrderTy
 import { formatRechargeBonusNumber, normalizeRechargeBonusMode, normalizeRechargeBonusTiers, quoteRechargeBonus } from '@/utils/rechargeBonus'
 import AppLayout from '@/components/layout/AppLayout.vue'
 import BalanceAmountPicker from '@/components/payment/BalanceAmountPicker.vue'
-import { BALANCE_RECHARGE_MAX, BALANCE_RECHARGE_PRESETS, isBalanceRechargeAmountValid } from '@/components/payment/balanceRecharge'
 import PaymentMethodSelector from '@/components/payment/PaymentMethodSelector.vue'
 import { METHOD_ORDER, getPaymentPopupFeatures, isBuiltInAlipayMethod, isBuiltInWxpayMethod } from '@/components/payment/providerConfig'
 import {
@@ -294,6 +292,7 @@ const subscriptionStore = useSubscriptionStore()
 const appStore = useAppStore()
 
 const user = computed(() => authStore.user)
+const recoveryUserId = authStore.user?.id
 const activeSubscriptions = computed(() => subscriptionStore.activeSubscriptions)
 
 function getDaysRemaining(expiresAt: string): number {
@@ -315,7 +314,6 @@ const errorMessage = ref('')
 const errorHintMessage = ref('')
 const activeTab = ref<'recharge' | 'subscription'>('recharge')
 const amount = ref<number | null>(50)
-const loadError = ref('')
 const zh = computed(() => (localeCode.value ?? 'zh').startsWith('zh'))
 const selectedMethod = ref('')
 const selectedPlan = ref<SubscriptionPlan | null>(null)
@@ -401,7 +399,8 @@ const paymentState = ref<PaymentRecoverySnapshot>(emptyPaymentState())
 
 function persistRecoverySnapshot(snapshot: PaymentRecoverySnapshot) {
   if (typeof window === 'undefined' || !snapshot.orderId) return
-  writePaymentRecoverySnapshot(window.localStorage, snapshot, PAYMENT_RECOVERY_STORAGE_KEY)
+  const ownedSnapshot = { ...snapshot, userId: recoveryUserId }
+  writePaymentRecoverySnapshot(window.localStorage, ownedSnapshot, PAYMENT_RECOVERY_STORAGE_KEY)
 }
 
 function removeRecoverySnapshot() {
@@ -562,6 +561,20 @@ function amountFitsMethod(amt: number, methodType: string): boolean {
   return true
 }
 
+// Visible methods decide the amount range shown to users.
+const globalMinAmount = computed(() => {
+  const limits = Object.values(visibleMethods.value)
+  if (limits.length === 0) return 0
+  if (limits.some(limit => limit.single_min <= 0)) return 0
+  return Math.min(...limits.map(limit => limit.single_min))
+})
+const globalMaxAmount = computed(() => {
+  const limits = Object.values(visibleMethods.value)
+  if (limits.length === 0) return 0
+  if (limits.some(limit => limit.single_max <= 0)) return 0
+  return Math.max(...limits.map(limit => limit.single_max))
+})
+
 // Selected method's limits (for validation and error messages)
 const selectedLimit = computed(() => visibleMethods.value[selectedMethod.value])
 const selectedCurrency = computed(() => normalizePaymentCurrency(selectedLimit.value?.currency))
@@ -623,7 +636,6 @@ const discountAmount = computed(() => roundPaymentAmount(validAmount.value - pay
 const creditedAmount = computed(() => bonusQuote.value.credited)
 const showBonusRow = computed(() => bonusQuote.value.mode !== 'discount' && bonusQuote.value.bonus > 0)
 
-
 const methodOptions = computed<PaymentMethodOption[]>(() =>
   enabledMethods.value.map((type) => {
     const ml = visibleMethods.value[type]
@@ -635,11 +647,6 @@ const methodOptions = computed<PaymentMethodOption[]>(() =>
     }
   })
 )
-
-const rechargePresets = computed(() => BALANCE_RECHARGE_PRESETS.filter(value => {
-  const quote = quoteRechargeBonus(rechargeBonusTiers.value, value, { multiplier: balanceRechargeMultiplier.value, mode: rechargeBonusMode.value, currencyDigits: currencyFractionDigits(selectedCurrency.value) })
-  return enabledMethods.value.some(method => visibleMethods.value[method].available !== false && amountFitsMethod(quote.payBase, method))
-}))
 
 const feeRate = computed(() => checkout.value?.recharge_fee_rate ?? 0)
 const feeAmount = computed(() =>
@@ -653,10 +660,8 @@ const totalAmount = computed(() =>
     : payBaseAmount.value
 )
 
-
 const amountError = computed(() => {
-  if (amount.value == null) return ''
-  if (!isBalanceRechargeAmountValid(validAmount.value)) return zh.value ? '请输入 0 到 1000 之间的金额（不含 0），最多两位小数。' : 'Enter an amount above 0 and up to 1,000, with at most two decimals.'
+  if (validAmount.value <= 0) return ''
   // No method can handle this amount
   if (!enabledMethods.value.some((m) => amountFitsMethod(payBaseAmount.value, m))) {
     return t('payment.amountNoMethod')
@@ -671,7 +676,7 @@ const amountError = computed(() => {
 })
 
 const canSubmit = computed(() =>
-  !checkout.value.balance_disabled && isBalanceRechargeAmountValid(validAmount.value)
+  validAmount.value > 0
     && amountFitsMethod(payBaseAmount.value, selectedMethod.value)
     && selectedLimit.value?.available !== false
 )
@@ -721,8 +726,8 @@ const canSubmitSubscription = computed(() =>
 
 // Auto-switch to first available method when current selection can't handle the amount
 watch(() => [payBaseAmount.value, selectedMethod.value] as const, ([amt, method]) => {
-  if (amt <= 0 || (visibleMethods.value[method]?.available !== false && amountFitsMethod(amt, method))) return
-  const available = enabledMethods.value.find((m) => visibleMethods.value[m]?.available !== false && amountFitsMethod(amt, m))
+  if (amt <= 0 || amountFitsMethod(amt, method)) return
+  const available = enabledMethods.value.find((m) => amountFitsMethod(amt, m))
   if (available) selectedMethod.value = available
 })
 
@@ -790,10 +795,6 @@ async function confirmSubscribe() {
 }
 
 async function createOrder(orderAmount: number, orderType: OrderType, planId?: number, options: CreateOrderOptions = {}) {
-  if (orderType === 'balance' && !options.wechatResumeToken && !isBalanceRechargeAmountValid(orderAmount)) {
-    appStore.showError(zh.value ? '单次充值金额需大于 0 且不超过 1000。' : 'Top-up amount must be above 0 and no more than 1,000.')
-    return
-  }
   submitting.value = true
   errorMessage.value = ''
   errorHintMessage.value = ''
@@ -1123,14 +1124,10 @@ async function resumeWechatPaymentFromQuery() {
   }
 }
 
-// Independent presentation preserves the established payment launch and recovery flow.
-async function loadCheckout() {
-  loading.value = true
-  loadError.value = ''
+onMounted(async () => {
   try {
     const res = await paymentAPI.getCheckoutInfo()
     checkout.value = res.data
-    if (!hasWechatResumeQuery(route.query) && !rechargePresets.value.includes(validAmount.value as typeof BALANCE_RECHARGE_PRESETS[number])) amount.value = rechargePresets.value[0] ?? null
     if (enabledMethods.value.length) {
       const order: readonly string[] = METHOD_ORDER
       const sorted = [...enabledMethods.value].sort((a, b) => {
@@ -1149,11 +1146,12 @@ async function loadCheckout() {
         : typeof route.query.wechat_resume_token === 'string'
           ? route.query.wechat_resume_token
           : undefined
+      const rawSnapshot = window.localStorage.getItem(PAYMENT_RECOVERY_STORAGE_KEY)
       const restored = readPaymentRecoverySnapshot(
-        window.localStorage.getItem(PAYMENT_RECOVERY_STORAGE_KEY),
+        rawSnapshot,
         { resumeToken: routeResumeToken },
       )
-      if (restored) {
+      if (restored && user.value?.id && JSON.parse(rawSnapshot!).userId === user.value.id) {
         paymentState.value = restored
         paymentPhase.value = 'paying'
         const restoredMethod = normalizeVisibleMethod(restored.paymentType)
@@ -1181,17 +1179,13 @@ async function loadCheckout() {
         }
       }
     }
-  } catch (err: unknown) {
-    loadError.value = extractI18nErrorMessage(err, t, 'payment.errors', t('common.error'))
-    appStore.showError(loadError.value)
-  }
+  } catch (err: unknown) { appStore.showError(extractI18nErrorMessage(err, t, 'payment.errors', t('common.error'))) }
   finally { loading.value = false }
   // Fetch active subscriptions (uses cache, non-blocking); skipped when the subscription feature is off
   if (subscriptionEnabled.value) {
     subscriptionStore.fetchActiveSubscriptions().catch(() => {})
   }
-}
-onMounted(loadCheckout)
+})
 </script>
 
 <style scoped>
