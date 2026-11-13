@@ -1,15 +1,50 @@
 <template>
-  <div class="plaza-pricing-table overflow-x-auto" :style="accentStyle">
+  <div>
+    <div class="catalog-mobile-prices md:hidden">
+      <article v-for="{ model: m, period, key } in rows" :key="key" class="mobile-price-card">
+        <div class="mobile-price-heading">
+          <strong>{{ m.name }}</strong>
+          <CatalogSavingsBadge :comparison="compareCatalogModel(m, period ? periodRate(period) : effectiveRate)" />
+        </div>
+        <p v-if="period" class="mobile-price-note">
+          {{ m.time_pricing?.weekdays_only ? t('modelPlaza.table.timePricingWeekdays') : '' }}
+          {{ formatTimeWindow(period) }} · {{ m.time_pricing?.timezone }}
+        </p>
+        <template v-if="billingMode(m) === BILLING_MODE_TOKEN">
+          <div v-for="(iv, idx) in tokenIntervals(m).length ? tokenIntervals(m) : [m.pricing]" :key="idx" class="mobile-price-tier">
+            <p v-if="tokenIntervals(m).length" class="mobile-price-note">{{ tierLabel(tokenIntervals(m)[idx]) }}</p>
+            <div class="mobile-price-pair">
+              <div><span>{{ t('modelPlaza.table.input') }}</span><strong>{{ paidPerMillion(iv?.input_price, period) }}</strong></div>
+              <div><span>{{ t('modelPlaza.table.output') }}</span><strong>{{ paidPerMillion(iv?.output_price, period) }}</strong></div>
+            </div>
+          </div>
+          <p v-if="!officialIntervals(m).length" class="mobile-price-note">
+            {{ t('modelPlaza.table.officialPrice') }}: {{ official(m.official_pricing?.input_price) }} / {{ official(m.official_pricing?.output_price) }}
+          </p>
+        </template>
+        <template v-else>
+          <div v-for="(iv, idx) in requestIntervals(m)" :key="idx" class="mobile-media-price">
+            <span>{{ tierLabel(iv) }}</span><strong>{{ paidRequestPrice(m, iv.per_request_price) }} {{ perUnitSuffix(m) }}</strong>
+          </div>
+          <p v-if="!requestIntervals(m).length" class="mobile-media-price">{{ paidRequestPrice(m, m.pricing?.per_request_price) }} {{ perUnitSuffix(m) }}</p>
+        </template>
+        <p class="mobile-price-note">{{ billingMode(m) === BILLING_MODE_TOKEN ? 'USD / 1M tokens' : billingModeLabel(m) }}</p>
+      </article>
+      <button type="button" class="mobile-detail-toggle" :aria-expanded="showFullTable" @click="showFullTable = !showFullTable">
+        {{ (locale ?? 'zh').startsWith('zh') ? (showFullTable ? '收起完整计价表' : '查看完整计价表（缓存、阶梯与倍率）') : (showFullTable ? 'Hide full pricing table' : 'Full pricing table: cache, tiers and rates') }}
+      </button>
+    </div>
+  <div class="catalog-detail-table plaza-pricing-table overflow-x-auto" :class="{ 'catalog-table-expanded': showFullTable }" :style="accentStyle">
     <table class="w-full min-w-[1000px] table-auto border-collapse text-sm tabular-nums">
       <colgroup>
-        <col class="w-[25%]" />
+        <col class="w-[23%]" />
         <col class="w-[11%]" />
         <col class="w-[9%]" />
         <col class="w-[14%]" />
         <col class="w-[11%]" />
         <col class="w-[8%]" />
         <col class="w-[14%]" />
-        <col class="w-[8%]" />
+        <col class="w-[14%]" />
       </colgroup>
       <thead>
         <tr
@@ -40,7 +75,7 @@
             rowspan="2"
             class="border-l border-gray-100 py-2.5 pl-3 pr-5 text-right align-middle dark:border-dark-700/60"
           >
-            {{ t('modelPlaza.table.rate') }}
+            {{ (locale ?? 'zh').startsWith('zh') ? '官方折扣 / 倍率' : 'Savings / rate' }}
           </th>
         </tr>
         <tr
@@ -282,6 +317,9 @@
           <td
             class="pz-rate border-l border-gray-100 py-2.5 pl-3 pr-5 text-right align-middle font-mono text-xs dark:border-dark-700/60"
           >
+            <div class="mb-2 text-left">
+              <CatalogSavingsBadge :comparison="compareCatalogModel(m, period ? periodRate(period) : effectiveRate)" />
+            </div>
             <span
               v-if="period"
               class="font-bold text-primary-600 dark:text-primary-400"
@@ -303,10 +341,13 @@
       </tbody>
     </table>
   </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
+import CatalogSavingsBadge from './CatalogSavingsBadge.vue'
+import { compareCatalogModel } from './catalogComparison'
 import { useI18n } from 'vue-i18n'
 import { formatScaled, resolveIntervalPrices } from '@/utils/pricing'
 import { platformAccentColor, platformBadgeLightClass, platformLabel } from '@/utils/platformColors'
@@ -353,7 +394,8 @@ const props = defineProps<{
   peakRateMultiplier?: number | null
 }>()
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
+const showFullTable = ref(false)
 
 /** 实付分区只从平台拿一个主色,浅底/标题/下划线全部由 scoped CSS 用 color-mix 派生。 */
 const accentStyle = computed(() => ({ '--plaza-accent': platformAccentColor(props.platform ?? '') }))
@@ -563,6 +605,21 @@ function trimZero(n: number): string {
 </script>
 
 <style scoped>
+.catalog-mobile-prices { background: var(--cat-bg, #fff); }
+.mobile-price-card { padding: 18px; border-bottom: 1px solid var(--cat-line, #e2e8f0); }
+.mobile-price-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.mobile-price-heading > strong { font-size: 13px; overflow-wrap: anywhere; }
+.mobile-price-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0 10px; }
+.mobile-price-pair > div { display: flex; flex-direction: column; gap: 5px; }
+.mobile-price-pair span, .mobile-price-note { color: var(--cat-muted, #64748b); font-size: 10px; line-height: 1.8; }
+.mobile-price-pair strong { color: var(--cat-accent, #13866c); font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.mobile-price-tier + .mobile-price-tier { border-top: 1px dashed var(--cat-line, #e2e8f0); margin-top: 10px; padding-top: 10px; }
+.mobile-media-price { display: flex; justify-content: space-between; gap: 10px; margin: 14px 0; font-size: 13px; }
+.mobile-detail-toggle { width: 100%; padding: 16px; text-align: center; color: var(--cat-accent, #13866c); font-size: 11px; }
+@media (max-width: 767px) {
+  .catalog-detail-table { display: none; }
+  .catalog-table-expanded { display: block; border-top: 1px solid var(--cat-line, #e2e8f0); }
+}
 /* 实付分区配色统一从 --plaza-accent(平台主色)派生,新增平台无需扩展样式 */
 .plaza-pricing-table {
   --pz-title: color-mix(in srgb, var(--plaza-accent) 88%, black);
@@ -570,7 +627,7 @@ function trimZero(n: number): string {
   --pz-bg-hover: color-mix(in srgb, var(--plaza-accent) 15%, white);
   --pz-row-bg: #fff;
   --pz-stripe: #f8fafc;
-  --pz-hover: #eef2ff;
+  --pz-hover: #f0fdfa;
   --pz-line: #e2e8f0;
   border-radius: 0 0 1.25rem 1.25rem;
   scrollbar-color: var(--pz-line) transparent;
