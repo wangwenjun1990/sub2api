@@ -163,6 +163,9 @@ export default {
 
   // Navigation
   nav: {
+    apiSection: 'API',
+    billingSection: '账单',
+    otherSection: '其它',
     dashboard: '仪表盘',
     announcements: '公告',
     apiKeys: 'API 密钥',

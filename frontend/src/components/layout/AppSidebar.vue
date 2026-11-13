@@ -128,9 +128,12 @@
 
       <!-- Regular User View -->
       <template v-else-if="!appStore.backendModeEnabled">
-        <div class="sidebar-section">
+        <div v-for="group in userNavGroups" :key="group.id" class="sidebar-section">
+          <div class="sidebar-section-title" :class="{ 'sidebar-section-title-collapsed': sidebarCollapsed }" :aria-hidden="sidebarCollapsed ? 'true' : 'false'">
+            <span class="sidebar-section-title-text" :class="{ 'sidebar-section-title-text-collapsed': sidebarCollapsed }">{{ group.label }}</span>
+          </div>
           <router-link
-            v-for="item in userNavItems"
+            v-for="item in group.items"
             :key="item.path"
             :to="item.path"
             class="sidebar-link mb-1"
@@ -768,6 +771,25 @@ const userNavItems = computed((): NavItem[] => finalizeNav(buildSelfNavItems(tru
 // Admins access 可用渠道 from this section just like regular users — there is no
 // separate admin entry, since the page is purely a user-facing view.
 const personalNavItems = computed((): NavItem[] => finalizeNav(buildSelfNavItems(false)))
+
+interface NavGroup {
+  id: 'api' | 'billing' | 'other'
+  label: string
+  items: NavItem[]
+}
+
+function groupSelfNavItems(items: NavItem[]): NavGroup[] {
+  const apiPaths = new Set(['/dashboard', '/keys', '/batch-image', '/model-plaza/catalog', '/available-channels', '/monitor'])
+  const billingPaths = new Set(['/subscriptions', '/recharge', '/orders', '/usage', '/redeem', '/affiliate'])
+  const groups: NavGroup[] = [
+    { id: 'api', label: t('nav.apiSection'), items: items.filter(item => apiPaths.has(item.path)) },
+    { id: 'billing', label: t('nav.billingSection'), items: items.filter(item => billingPaths.has(item.path)) },
+    { id: 'other', label: t('nav.otherSection'), items: items.filter(item => !apiPaths.has(item.path) && !billingPaths.has(item.path)) },
+  ]
+  return groups.filter(group => group.items.length || group.id === 'other')
+}
+
+const userNavGroups = computed(() => groupSelfNavItems(userNavItems.value))
 
 // Custom menu items filtered by visibility
 const customMenuItemsForUser = computed(() => {

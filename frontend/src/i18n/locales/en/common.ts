@@ -163,6 +163,9 @@ export default {
 
   // Navigation
   nav: {
+    apiSection: 'API',
+    billingSection: 'Billing',
+    otherSection: 'Other',
     dashboard: 'Dashboard',
     announcements: 'Announcements',
     apiKeys: 'API Keys',

@@ -90,3 +90,13 @@ describe('AppSidebar MCP entry', () => {
     expect(componentSource).not.toMatch(/path: '\/settings\/mcp'[^\n]*PluginIcon/)
   })
 })
+
+
+describe('AppSidebar user navigation groups', () => {
+  it('groups API, billing, and other entries while retaining feature-filtered navigation', () => {
+    expect(componentSource).toContain("const apiPaths = new Set(['/dashboard', '/keys', '/batch-image', '/model-plaza/catalog', '/available-channels', '/monitor'])")
+    expect(componentSource).toContain("const billingPaths = new Set(['/subscriptions', '/recharge', '/orders', '/usage', '/redeem', '/affiliate'])")
+    expect(componentSource).toContain("const userNavGroups = computed(() => groupSelfNavItems(userNavItems.value))")
+    expect(componentSource).toContain("id: 'other', label: t('nav.otherSection')")
+  })
+})
