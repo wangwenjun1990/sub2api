@@ -337,6 +337,18 @@ const routes: RouteRecordRaw[] = [
     }
   },
   {
+    path: '/recharge',
+    name: 'BalanceRecharge',
+    component: () => import('@/views/user/BalanceRechargeView.vue'),
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: false,
+      title: 'Balance Top-up',
+      titleKey: 'payment.tabTopUp',
+      requiresPayment: true
+    }
+  },
+  {
     path: '/purchase',
     name: 'PurchaseSubscription',
     component: () => import('@/views/user/PaymentView.vue'),
