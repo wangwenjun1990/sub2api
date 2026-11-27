@@ -78,7 +78,7 @@
 <blockquote>
 <p><strong>收好你的密钥。</strong> API Key 相当于调用服务的凭证。截图时请遮住完整密钥，不要提交到公开仓库。</p>
 </blockquote>
-<figure class="screenshot-placeholder"><span aria-hidden="true">▧</span><figcaption>控制台创建 API Key<small>操作图示 · 待补充</small></figcaption></figure>
+<figure><img src="images/api-key.png" alt="控制台创建 API Key" loading="lazy"><figcaption>控制台创建 API Key</figcaption></figure>
 <nav class="pagination" aria-label="前后文档"><span></span><a href="#node"><small>下一篇 →</small>Node.js 与 npm</a></nav></article>
 <article class="article" id="node" data-title="Node.js 与 npm" hidden><p class="page-eyebrow">RUNTIME</p><h1 id="node-section-1">安装 Node.js 与 npm</h1>
 <p>先准备运行环境。npm 随 Node.js 一起安装，不需要再单独下载。</p>
@@ -90,7 +90,7 @@
 <li>双击安装，保留默认的 npm 与 PATH 选项，按提示完成。</li>
 <li>关闭现有的 PowerShell 窗口，重新打开一个终端。</li>
 </ol>
-<figure class="screenshot-placeholder"><span aria-hidden="true">▧</span><figcaption>Windows 安装 Node.js<small>操作图示 · 待补充</small></figcaption></figure>
+<figure class="screenshot-placeholder"><span aria-hidden="true">▧</span><figcaption>Windows 安装 Node.js<small><code>images/node-windows.png</code></small></figcaption></figure>
 
 
 </section>
@@ -101,7 +101,7 @@
 <div class="code-block"><div class="code-header"><span>bash</span><button type="button" class="copy-button" aria-label="复制代码">复制</button></div><pre><code>nvm install --lts
 nvm use --lts</code></pre></div>
 <p>也可以从 <a href="https://nodejs.org/zh-cn/download" target="_blank" rel="noopener noreferrer">Node.js 官方下载页</a> 选择 Linux 和对应架构，按官方步骤安装 LTS 版。</p>
-<figure class="screenshot-placeholder"><span aria-hidden="true">▧</span><figcaption>Linux 安装 Node.js<small>操作图示 · 待补充</small></figcaption></figure>
+<figure class="screenshot-placeholder"><span aria-hidden="true">▧</span><figcaption>Linux 安装 Node.js<small><code>images/node-linux.png</code></small></figcaption></figure>
 
 
 </section>
@@ -145,7 +145,7 @@ npm --version</code></pre></div>
 <h2 id="codex-section-3">检查是否安装成功</h2>
 <div class="code-block"><div class="code-header"><span>bash</span><button type="button" class="copy-button" aria-label="复制代码">复制</button></div><pre><code>codex --version</code></pre></div>
 <p>看到版本号说明安装成功。如果提示找不到命令，先重开终端，再检查 npm 全局安装目录是否已加入 PATH。</p>
-<figure class="screenshot-placeholder"><span aria-hidden="true">▧</span><figcaption>Codex 安装成功后的终端<small>操作图示 · 待补充</small></figcaption></figure>
+<figure class="screenshot-placeholder"><span aria-hidden="true">▧</span><figcaption>Codex 安装成功后的终端<small><code>images/codex-installed.png</code></small></figcaption></figure>
 
 
 <h2 id="codex-section-4">配置后再开始</h2>
@@ -165,7 +165,7 @@ npm --version</code></pre></div>
 <p>前往 <a href="https://github.com/farion1231/cc-switch/releases/latest" target="_blank" rel="noopener noreferrer">CC Switch 官方 Releases</a>，下载适合系统与处理器架构的最新安装包。</p>
 <section data-os="windows">
 <p>选择文件名包含 <code>Windows</code> 的 <code>.msi</code> 安装包，或 <code>Windows-Portable.zip</code> 便携版。常见电脑选 x64 对应版本，ARM 电脑选 arm64 版本。安装后打开 CC Switch。</p>
-<figure class="screenshot-placeholder"><span aria-hidden="true">▧</span><figcaption>Windows 下载与安装 CC Switch<small>操作图示 · 待补充</small></figcaption></figure>
+<figure class="screenshot-placeholder"><span aria-hidden="true">▧</span><figcaption>Windows 下载与安装 CC Switch<small><code>images/cc-download-windows.png</code></small></figcaption></figure>
 
 
 </section>
@@ -176,7 +176,7 @@ npm --version</code></pre></div>
 <p>Ubuntu / Debian 示例：把文件名替换成实际下载的文件名。</p>
 <div class="code-block"><div class="code-header"><span>bash</span><button type="button" class="copy-button" aria-label="复制代码">复制</button></div><pre><code>sudo apt install ./CC-Switch-实际版本-Linux-x86_64.deb</code></pre></div>
 <p><strong>需要图形桌面。</strong> CC Switch 官方桌面版要求 glibc 2.35+ 与 WebKitGTK 4.1。仅通过 SSH 使用的服务器，请跳到 <a href="#configuration">手动配置</a>。</p>
-<figure class="screenshot-placeholder"><span aria-hidden="true">▧</span><figcaption>Linux 桌面安装 CC Switch<small>操作图示 · 待补充</small></figcaption></figure>
+<figure class="screenshot-placeholder"><span aria-hidden="true">▧</span><figcaption>Linux 桌面安装 CC Switch<small><code>images/cc-download-linux.png</code></small></figcaption></figure>
 
 
 </section>
@@ -218,7 +218,7 @@ npm --version</code></pre></div>
 <blockquote>
 <p><strong>更方便的方式。</strong> 若控制台的 API 密钥页面提供「导入 CC Switch」，可以直接导入，再在 CC Switch 中核对并启用。不要重复给已带 <code>/v1</code> 的地址追加 <code>/v1</code>。</p>
 </blockquote>
-<figure class="screenshot-placeholder"><span aria-hidden="true">▧</span><figcaption>CC Switch 的 Codex 供应商配置<small>操作图示 · 待补充</small></figcaption></figure>
+<figure class="screenshot-placeholder"><span aria-hidden="true">▧</span><figcaption>CC Switch 的 Codex 供应商配置<small><code>images/cc-provider.png</code></small></figcaption></figure>
 
 
 <h2 id="cc-switch-section-4">启用并验证</h2>
@@ -325,7 +325,7 @@ codex</code></pre></div>
 <li>在设有密钥环境变量的同一终端里启动 <code>codex</code>。</li>
 <li>发送简单的问题，确认能收到回复；也可在控制台查看调用记录。</li>
 </ol>
-<figure class="screenshot-placeholder"><span aria-hidden="true">▧</span><figcaption>Codex 成功连接后的界面<small>操作图示 · 待补充</small></figcaption></figure>
+<figure class="screenshot-placeholder"><span aria-hidden="true">▧</span><figcaption>Codex 成功连接后的界面<small><code>images/codex-ready.png</code></small></figcaption></figure>
 
 
 <blockquote>

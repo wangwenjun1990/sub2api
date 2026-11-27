@@ -48,7 +48,7 @@ node landing/docs/build.mjs
 
 方式一：按占位标记自动替换。
 
-正文中的 `<!-- screenshot:cc-provider | CC Switch 的 Codex 供应商配置 -->` 对应 `images/cc-provider.png`（也支持 jpg / jpeg / webp / gif）。保存截图后重新运行构建命令，会自动把占位框换成图片。其他标记同理。
+正文中的 `<!-- screenshot:cc-provider.png | CC Switch 的 Codex 供应商配置 -->` 对应 `images/cc-provider.png`，缺少截图时，占位框会显示这个路径。也支持同名的 jpg / jpeg / webp / gif。保存截图后重新运行构建命令，会自动把占位框换成图片。
 
 方式二：直接在 Markdown 里插图。
 

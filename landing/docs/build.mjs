@@ -30,10 +30,12 @@ const articles = pages.map(([id, title, icon, eyebrow], index) => {
   };
   renderer.code = ({ text, lang }) => `<div class="code-block"><div class="code-header"><span>${escape(lang || 'text')}</span><button type="button" class="copy-button" aria-label="复制代码">复制</button></div><pre><code>${escape(text)}</code></pre></div>\n`;
   const parse = md => marked.parse(md, { renderer, gfm: true });
-  let md = section[2].trim().replace(/<!-- screenshot:([a-z-]+)\s*\|\s*(.*?) -->/g, (_, slug, caption) => {
-    const image = images.find(file => file.match(/\.(png|jpe?g|webp|gif)$/i) && file.replace(/\.[^.]+$/, '') === slug);
+  let md = section[2].trim().replace(/<!-- screenshot:(([a-z-]+)\.(?:png|jpe?g|webp|gif))\s*\|\s*(.*?) -->/g, (_, filename, stem, caption) => {
+    const image = images.includes(filename) ? filename : images.find(file =>
+      /\.(png|jpe?g|webp|gif)$/i.test(file) && file.replace(/\.[^.]+$/, '') === stem
+    );
     if (image) return `\n<figure><img src="images/${escape(image)}" alt="${escape(caption)}" loading="lazy"><figcaption>${escape(caption)}</figcaption></figure>\n`;
-    return `\n<figure class="screenshot-placeholder"><span aria-hidden="true">▧</span><figcaption>${escape(caption)}<small>操作图示 · 待补充</small></figcaption></figure>\n`;
+    return `\n<figure class="screenshot-placeholder"><span aria-hidden="true">▧</span><figcaption>${escape(caption)}<small><code>images/${escape(filename)}</code></small></figcaption></figure>\n`;
   });
   md = md.replace(/^:::(windows|linux)\s*\r?\n([\s\S]*?)^:::\s*$/gm, (_, os, body) => `\n<section data-os="${os}"${os === 'linux' ? ' hidden' : ''}>\n${parse(body)}\n</section>\n`);
   const html = parse(md)

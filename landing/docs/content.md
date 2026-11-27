@@ -42,7 +42,7 @@
 
 > **收好你的密钥。** API Key 相当于调用服务的凭证。截图时请遮住完整密钥，不要提交到公开仓库。
 
-<!-- screenshot:api-key | 控制台创建 API Key -->
+<!-- screenshot:api-key.png | 控制台创建 API Key -->
 
 <!-- page:node -->
 # 安装 Node.js 与 npm
@@ -57,7 +57,7 @@
 3. 双击安装，保留默认的 npm 与 PATH 选项，按提示完成。
 4. 关闭现有的 PowerShell 窗口，重新打开一个终端。
 
-<!-- screenshot:node-windows | Windows 安装 Node.js -->
+<!-- screenshot:node-windows.png | Windows 安装 Node.js -->
 :::
 
 :::linux
@@ -70,7 +70,7 @@ nvm use --lts
 
 也可以从 [Node.js 官方下载页](https://nodejs.org/zh-cn/download) 选择 Linux 和对应架构，按官方步骤安装 LTS 版。
 
-<!-- screenshot:node-linux | Linux 安装 Node.js -->
+<!-- screenshot:node-linux.png | Linux 安装 Node.js -->
 :::
 
 ## 验证安装
@@ -129,7 +129,7 @@ codex --version
 
 看到版本号说明安装成功。如果提示找不到命令，先重开终端，再检查 npm 全局安装目录是否已加入 PATH。
 
-<!-- screenshot:codex-installed | Codex 安装成功后的终端 -->
+<!-- screenshot:codex-installed.png | Codex 安装成功后的终端 -->
 
 ## 配置后再开始
 
@@ -167,7 +167,7 @@ npm install -g @openai/codex@latest
 :::windows
 选择文件名包含 `Windows` 的 `.msi` 安装包，或 `Windows-Portable.zip` 便携版。常见电脑选 x64 对应版本，ARM 电脑选 arm64 版本。安装后打开 CC Switch。
 
-<!-- screenshot:cc-download-windows | Windows 下载与安装 CC Switch -->
+<!-- screenshot:cc-download-windows.png | Windows 下载与安装 CC Switch -->
 :::
 
 :::linux
@@ -181,7 +181,7 @@ sudo apt install ./CC-Switch-实际版本-Linux-x86_64.deb
 
 **需要图形桌面。** CC Switch 官方桌面版要求 glibc 2.35+ 与 WebKitGTK 4.1。仅通过 SSH 使用的服务器，请跳到 [手动配置](#configuration)。
 
-<!-- screenshot:cc-download-linux | Linux 桌面安装 CC Switch -->
+<!-- screenshot:cc-download-linux.png | Linux 桌面安装 CC Switch -->
 :::
 
 ## 添加 Codex 供应商
@@ -200,7 +200,7 @@ sudo apt install ./CC-Switch-实际版本-Linux-x86_64.deb
 
 > **更方便的方式。** 若控制台的 API 密钥页面提供「导入 CC Switch」，可以直接导入，再在 CC Switch 中核对并启用。不要重复给已带 `/v1` 的地址追加 `/v1`。
 
-<!-- screenshot:cc-provider | CC Switch 的 Codex 供应商配置 -->
+<!-- screenshot:cc-provider.png | CC Switch 的 Codex 供应商配置 -->
 
 ## 启用并验证
 
@@ -304,7 +304,7 @@ codex
 2. 在设有密钥环境变量的同一终端里启动 `codex`。
 3. 发送简单的问题，确认能收到回复；也可在控制台查看调用记录。
 
-<!-- screenshot:codex-ready | Codex 成功连接后的界面 -->
+<!-- screenshot:codex-ready.png | Codex 成功连接后的界面 -->
 
 > **用 CC Switch 管理时**，优先在 CC Switch 内修改该供应商，再启用并重启 Codex，避免切换时手动修改的关键字段被覆盖。
 
